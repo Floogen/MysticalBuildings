@@ -1,0 +1,16 @@
+﻿{
+  "Name": "[CP] Mystical Buildings",
+  "Author": "PeacefulEnd",
+  "Version": "1.0.0",
+  "Description": "Content Patcher for the Mystical Buildings.",
+  "UniqueID": "PeacefulEnd.ContentPatcher.MysticalBuildings",
+  "ContentPackFor": {
+    "UniqueID": "Pathoschild.ContentPatcher"
+  },
+  "Dependencies": [
+    {
+      "UniqueID": "PeacefulEnd.SolidFoundations",
+      "IsRequired": true
+    }
+  ]
+}

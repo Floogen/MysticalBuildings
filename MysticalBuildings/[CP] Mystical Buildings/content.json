@@ -1,0 +1,151 @@
+﻿{
+  "Format": "1.26.0",
+  "DynamicTokens": [
+    {
+      "Name": "QuizRange",
+      "Value": "24"
+    },
+    {
+      "Name": "GiftRange",
+      "Value": "24"
+    },
+    {
+      "Name": "Question",
+      "Value": "{{i18n:Quiz.Question.{{Random:{{Range:1,{{QuizRange}}}} |key=quiz {{Time}}}}}}"
+    },
+    {
+      "Name": "WrongAnswer",
+      "Value": "{{i18n:Quiz.WrongAnswer.{{Random:{{Range:1,{{QuizRange}}}} |key=quiz {{Time}}}}}}"
+    },
+    {
+      "Name": "SecondaryWrongAnswer",
+      "Value": "{{i18n:Quiz.SecondaryWrongAnswer.{{Random:{{Range:1,{{QuizRange}}}} |key=quiz {{Time}}}}}}"
+    },
+    {
+      "Name": "RightAnswer",
+      "Value": "{{i18n:Quiz.RightAnswer.{{Random:{{Range:1,{{QuizRange}}}} |key=quiz {{Time}}}}}}"
+    },
+    {
+      "Name": "ItemGiftId",
+      "Value": "{{i18n:Quiz.GiftId.{{Random:{{Range:1,{{GiftRange}}}} |key=reward {{Time}}}}}}"
+    },
+    {
+      "Name": "ItemGiftQuantity",
+      "Value": "{{i18n:Quiz.GiftQuantity.{{Random:{{Range:1,{{GiftRange}}}} |key=reward {{Time}}}}}}"
+    },
+    {
+      "Name": "ItemGiftQuality",
+      "Value": "{{i18n:Quiz.GiftQuality.{{Random:{{Range:0,{{GiftRange}}}} |key=reward {{Time}}}}}}"
+    }
+  ],
+  "Changes": [
+    {
+      "Action": "EditData",
+      "Target": "Data/BuildingsData",
+      "Fields": {
+        "PeacefulEnd.SolidFoundations.MysticalBuildings_QuizzicalStatue": {
+          "DefaultSpecialAction": {
+            "ConditionalActions": [
+              {
+                "DialogueWithChoices": {
+                  "Question": "{{i18n:Response.Start}}",
+                  "Responses": [
+                    {
+                      "Text": "{{i18n:Response.Confirm}}",
+                      "SpecialAction": {
+                        "DialogueWithChoices": {
+                          "ShuffleResponseOrder": true,
+                          "Question": "{{Question}}",
+                          "Responses": [
+                            {
+                              "Text": "{{RightAnswer}}",
+                              "SpecialAction": {
+                                "ModifyFlags": [
+                                  {
+                                    "Name": "AttemptedTest",
+                                    "Type": "Temporary",
+                                    "Operation": "Add"
+                                  },
+                                  {
+                                    "Name": "PassedTest",
+                                    "Type": "Temporary",
+                                    "Operation": "Add"
+                                  }
+                                ],
+                                "Dialogue": {
+                                  "Text": "{{i18n:Response.GivenRightAnswer}}"
+                                },
+                                "ModifyInventory": {
+                                  "ItemId": "{{ItemGiftId}}",
+                                  "Quantity": "{{Random:{{Range:1,{{ItemGiftQuantity}}}}}}",
+                                  "Quality": "{{Random:{{Range:0,{{ItemGiftQuality}}}}}}",
+                                  "Operation": "Add"
+                                }
+                              }
+                            },
+                            {
+                              "Text": "{{WrongAnswer}}",
+                              "SpecialAction": {
+                                "Dialogue": {
+                                  "Text": "{{i18n:Response.GivenWrongAnswer}}"
+                                },
+                                "ModifyFlags": [
+                                  {
+                                    "Name": "AttemptedTest",
+                                    "Type": "Temporary",
+                                    "Operation": "Add"
+                                  }
+                                ]
+                              }
+                            },
+                            {
+                              "Text": "{{SecondaryWrongAnswer}}",
+                              "SpecialAction": {
+                                "Dialogue": {
+                                  "Text": "{{i18n:Response.GivenWrongAnswer}}"
+                                },
+                                "ModifyFlags": [
+                                  {
+                                    "Name": "AttemptedTest",
+                                    "Type": "Temporary",
+                                    "Operation": "Add"
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        },
+                        "ModifyFlags": [
+                          {
+                            "Name": "ReadyToStart",
+                            "Type": "Temporary",
+                            "Operation": "Add"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "Text": "{{i18n:Response.Deny}}"
+                    }
+                  ]
+                },
+                "ModDataFlags": [
+                  "!AttemptedTest"
+                ]
+              },
+              {
+                "Dialogue": {
+                  "Text": "{{i18n:Response.AlreadyTested}}"
+                },
+                "ModDataFlags": [
+                  "AttemptedTest"
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "Update": "OnDayStart"
+    }
+  ]
+}
