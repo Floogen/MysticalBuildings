@@ -38,7 +38,7 @@
 			xcopy /s /y /i "C:\Users\Floogen\Documents\GitHub Repos\MysticalBuildings\MysticalBuildings\[CP] Mystical Buildings\*" "C:\Users\Floogen\Documents\GitHub Repos\MysticalBuildings\MysticalBuildings\releases\latest\Mystical Buildings\[CP] Mystical Buildings"
 			xcopy /s /y /i "C:\Users\Floogen\Documents\GitHub Repos\MysticalBuildings\MysticalBuildings\[SF] Mystical Buildings\*" "C:\Users\Floogen\Documents\GitHub Repos\MysticalBuildings\MysticalBuildings\releases\latest\Mystical Buildings\[SF] Mystical Buildings"
 
-			7z a -tzip "C:\Users\Floogen\Documents\GitHub Repos\MysticalBuildings\MysticalBuildings\releases\MysticalBuildings-$(Version).zip" "C:\Users\Floogen\Documents\GitHub Repos\MysticalBuildings\MysticalBuildings\releases\latest\Mystical Buildings"
+			7z a -tzip "C:\Users\Floogen\Documents\GitHub Repos\MysticalBuildings\MysticalBuildings\releases\Mystical Buildings-$(Version).zip" "C:\Users\Floogen\Documents\GitHub Repos\MysticalBuildings\MysticalBuildings\releases\latest\Mystical Buildings"
 
 			powershell Remove-Item -Path '$(GameModsPath)\Mystical Buildings' -Recurse -Force
 
