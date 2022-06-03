@@ -1,0 +1,48 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<Version>1.0.0</Version>
+		<TargetFramework>net5.0</TargetFramework>
+		<LangVersion>latest</LangVersion>
+		<EnableHarmony>true</EnableHarmony>
+		<EnableModZip>false</EnableModZip>
+		<EnableModDeploy>false</EnableModDeploy>
+		<GameModsPath>E:\SteamLibrary\steamapps\common\Stardew Valley\Mods</GameModsPath>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Compile Remove="releases\**" />
+		<EmbeddedResource Remove="releases\**" />
+		<None Remove="releases\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Folder Include="Framework\Interfaces\" />
+		<Folder Include="Framework\Managers\" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Pathoschild.Stardew.ModBuildConfig" Version="4.0.1" />
+	</ItemGroup>
+
+	<PropertyGroup>
+		<PostBuildEventDependsOn>
+			$(PostBuildEventDependsOn);
+			PostBuildMacros;
+		</PostBuildEventDependsOn>
+		<PostBuildEvent>
+			powershell -Command "(ls *manifest.json -rec | foreach-object { $f=$_.FullName; (gc -LiteralPath \"$f\") -replace 'REPLACE_ME_WITH_VERSION',  '$(Version)' | sc -LiteralPath \"$f\" })"
+
+			powershell Remove-Item -Path 'C:\Users\Floogen\Documents\GitHub Repos\MysticalBuildings\MysticalBuildings\releases\latest\*"' -Recurse -Force
+			xcopy /s /y /i "C:\Users\Floogen\Documents\GitHub Repos\MysticalBuildings\MysticalBuildings\bin\Debug\net5.0" "C:\Users\Floogen\Documents\GitHub Repos\MysticalBuildings\MysticalBuildings\releases\latest\Mystical Buildings\MysticalBuildings"
+			xcopy /s /y /i "C:\Users\Floogen\Documents\GitHub Repos\MysticalBuildings\MysticalBuildings\[CP] Mystical Buildings\*" "C:\Users\Floogen\Documents\GitHub Repos\MysticalBuildings\MysticalBuildings\releases\latest\Mystical Buildings\[CP] Mystical Buildings"
+			xcopy /s /y /i "C:\Users\Floogen\Documents\GitHub Repos\MysticalBuildings\MysticalBuildings\[SF] Mystical Buildings\*" "C:\Users\Floogen\Documents\GitHub Repos\MysticalBuildings\MysticalBuildings\releases\latest\Mystical Buildings\[SF] Mystical Buildings"
+
+			7z a -tzip "C:\Users\Floogen\Documents\GitHub Repos\MysticalBuildings\MysticalBuildings\releases\MysticalBuildings-$(Version).zip" "C:\Users\Floogen\Documents\GitHub Repos\MysticalBuildings\MysticalBuildings\releases\latest\Mystical Buildings"
+
+			powershell Remove-Item -Path '$(GameModsPath)\Mystical Buildings' -Recurse -Force
+
+			xcopy /s /y /i "C:\Users\Floogen\Documents\GitHub Repos\MysticalBuildings\MysticalBuildings\releases\latest\Mystical Buildings" "$(GameModsPath)\Mystical Buildings"
+		</PostBuildEvent>
+	</PropertyGroup>
+</Project>
