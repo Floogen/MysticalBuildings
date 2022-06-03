@@ -1,8 +1,12 @@
-﻿using MysticalBuildings.Framework.Interfaces;
-using MysticalBuildings.Framework.Managers;
+﻿using MysticalBuildings.Framework.Managers;
+using SolidFoundations.Framework.Interfaces.Internal;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
+using StardewValley;
+using StardewValley.Buildings;
+using StardewValley.Menus;
 using System;
+using System.Collections.Generic;
 
 namespace MysticalBuildings
 {
@@ -11,6 +15,7 @@ namespace MysticalBuildings
         // Shared static helpers
         internal static IMonitor monitor;
         internal static IModHelper modHelper;
+        internal static ITranslationHelper i18n;
 
         // Managers
         internal static ApiManager apiManager;
@@ -20,6 +25,7 @@ namespace MysticalBuildings
             // Set up the monitor, helper and multiplayer
             monitor = Monitor;
             modHelper = helper;
+            i18n = helper.Translation;
 
             // Set up the managers
             apiManager = new ApiManager(monitor);
@@ -38,9 +44,55 @@ namespace MysticalBuildings
             }
         }
 
-        private void OnBroadcastSpecialActionTriggered(object sender, ISolidFoundationsApi.BroadcastEventArgs e)
+        private void OnBroadcastSpecialActionTriggered(object sender, IApi.BroadcastEventArgs e)
         {
-            Monitor.Log("HERE", LogLevel.Debug);
+            if (e.BuildingId != "PeacefulEnd.SolidFoundations.MysticalBuildings_StatueofGreed" || e.Farmer.ActiveObject is null)
+            {
+                return;
+            }
+            var item = e.Farmer.ActiveObject;
+            e.Farmer.currentLocation.createQuestionDialogue(String.Format(i18n.Get("Greed.Question.Confirmation"), item.Name), e.Farmer.currentLocation.createYesNoResponses(), new GameLocation.afterQuestionBehavior((who, whichAnswer) => HandleStatueOfGreed(e.Building, who, whichAnswer, item)));
+        }
+
+        private void HandleStatueOfGreed(Building building, Farmer who, string whichAnswer, Item item)
+        {
+            if (whichAnswer == "No")
+            {
+                return;
+            }
+            var solidFoundationsApi = apiManager.GetSolidFoundationsApi();
+
+            double targetChance = new Random((int)((long)Game1.uniqueIDForThisGame + who.DailyLuck + Game1.stats.DaysPlayed * 500 + Game1.ticks)).NextDouble();
+            double modifier = 1.0 + who.DailyLuck * 2.0 + who.LuckLevel * 0.08;
+
+            who.removeItemFromInventory(item);
+            if (targetChance < 0.4 * modifier)
+            {
+                // Double the item
+                int stackSize = item.Stack * 2;
+                List<Item> itemsToAdd = new List<Item>() { item };
+                if (stackSize > item.maximumStackSize())
+                {
+                    var secondaryItem = item.getOne();
+                    secondaryItem.Stack = item.maximumStackSize() - stackSize;
+                    itemsToAdd.Add(secondaryItem);
+
+                    stackSize = item.maximumStackSize();
+                }
+                item.Stack = stackSize;
+
+                who.addItemsByMenuIfNecessary(itemsToAdd);
+
+                if (Game1.activeClickableMenu is null)
+                {
+                    Game1.activeClickableMenu = new DialogueBox(String.Format(i18n.Get("Greed.Response.Reward"), item.Name));
+                }
+            }
+            else
+            {
+                solidFoundationsApi.AddBuildingFlags(building, new List<string>() { "IsEating" }, true);
+                Game1.activeClickableMenu = new DialogueBox(i18n.Get("Greed.Response.Hungry"));
+            }
         }
     }
 }

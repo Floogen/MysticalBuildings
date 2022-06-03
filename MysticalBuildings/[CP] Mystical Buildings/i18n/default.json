@@ -1,11 +1,26 @@
 ﻿{
+  // General Responses
+  "General.Response.Confirm": "Yes",
+  "General.Response.Deny": "No",
+
+  // Statue of Greed
+  // Dialogue
+  "Greed.Dialogue.Yawn": "Yawnnnn....",
+  "Greed.Dialogue.Sleepy": "Sleeping sure makes me hungry...",
+  "Greed.Dialogue.Greeting": "Oh didn't notice you there, friend. If you would like your items doubled, just hand them over to me.",
+  "Greed.Dialogue.GreetingOther": "If you would like an item doubled, just hand it over to me.",
+  "Greed.Dialogue.Full": "The statue is loudly munching away and doesn't seem to notice you. Try again tomorrow.",
+
+  // Questions
+  "Greed.Question.Confirmation": "Are you sure you'd like to give this item to the statue?",
+
+
+  // Quizzical Statue
   // Responses
-  "Response.Start": "Care to take a quiz?",
-  "Response.Confirm": "Yes",
-  "Response.Deny": "No",
-  "Response.GivenRightAnswer": "That is correct, well done!",
-  "Response.GivenWrongAnswer": "Hm, that is not correct. Try your luck tomorrow.",
-  "Response.AlreadyTested": "The statue is silent. Try again tomorrow.",
+  "Quiz.Response.Start": "Care to take a quiz?",
+  "Quiz.Response.GivenRightAnswer": "That is correct, well done!",
+  "Quiz.Response.GivenWrongAnswer": "Hm, that is not correct. Try your luck tomorrow.",
+  "Quiz.Response.AlreadyTested": "The statue is silent. Try again tomorrow.",
 
   // Question and answers
   "Quiz.Question.1": "What does Abigail love?",

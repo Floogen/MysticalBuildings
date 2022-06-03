@@ -43,15 +43,89 @@
       "Action": "EditData",
       "Target": "Data/BuildingsData",
       "Fields": {
+        "PeacefulEnd.SolidFoundations.MysticalBuildings_StatueofGreed": {
+          "DefaultSpecialAction": {
+            "ConditionalActions": [
+              {
+                "Dialogue": {
+                  "Text": [
+                    "{{i18n:Greed.Dialogue.Yawn}}",
+                    "{{i18n:Greed.Dialogue.Sleepy}}",
+                    "{{i18n:Greed.Dialogue.Greeting}}"
+                  ],
+                  "ActionAfterDialogue": {
+                    "ModifyFlags": [
+                      {
+                        "Name": "FinishedYawning",
+                        "Type": "Temporary",
+                        "Operation": "Add"
+                      }
+                    ]
+                  }
+                },
+                "ModifyFlags": [
+                  {
+                    "Name": "StartYawning",
+                    "Type": "Temporary",
+                    "Operation": "Add"
+                  }
+                ],
+                "Condition": "!IS_PLAYER_HOLDING_ANYTHING Current",
+                "ModDataFlags": [
+                  "!FinishedYawning",
+                  "!IsEating"
+                ]
+              },
+              {
+                "Dialogue": {
+                  "Text": [
+                    "{{i18n:Greed.Dialogue.GreetingOther}}"
+                  ]
+                },
+                "Condition": "!IS_PLAYER_HOLDING_ANYTHING Current",
+                "ModDataFlags": [
+                  "FinishedYawning",
+                  "!IsEating"
+                ]
+              },
+              {
+                "Broadcast": {
+                  "Message": "Poked"
+                },
+                "Condition": "IS_PLAYER_HOLDING_ANYTHING Current",
+                "ModDataFlags": [
+                  "!IsEating"
+                ]
+              },
+              {
+                "Dialogue": {
+                  "Text": [
+                    "{{i18n:Greed.Dialogue.Full}}"
+                  ]
+                },
+                "ModDataFlags": [
+                  "IsEating"
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "Update": "OnDayStart"
+    },
+    {
+      "Action": "EditData",
+      "Target": "Data/BuildingsData",
+      "Fields": {
         "PeacefulEnd.SolidFoundations.MysticalBuildings_QuizzicalStatue": {
           "DefaultSpecialAction": {
             "ConditionalActions": [
               {
                 "DialogueWithChoices": {
-                  "Question": "{{i18n:Response.Start}}",
+                  "Question": "{{i18n:Quiz.Response.Start}}",
                   "Responses": [
                     {
-                      "Text": "{{i18n:Response.Confirm}}",
+                      "Text": "{{i18n:General.Response.Confirm}}",
                       "SpecialAction": {
                         "DialogueWithChoices": {
                           "ShuffleResponseOrder": true,
@@ -73,7 +147,7 @@
                                   }
                                 ],
                                 "Dialogue": {
-                                  "Text": "{{i18n:Response.GivenRightAnswer}}"
+                                  "Text": [ "{{i18n:Quiz.Response.GivenRightAnswer}}" ]
                                 },
                                 "ModifyInventory": {
                                   "ItemId": "{{ItemGiftId}}",
@@ -87,7 +161,7 @@
                               "Text": "{{WrongAnswer}}",
                               "SpecialAction": {
                                 "Dialogue": {
-                                  "Text": "{{i18n:Response.GivenWrongAnswer}}"
+                                  "Text": [ "{{i18n:Quiz.Response.GivenWrongAnswer}}" ]
                                 },
                                 "ModifyFlags": [
                                   {
@@ -102,7 +176,7 @@
                               "Text": "{{SecondaryWrongAnswer}}",
                               "SpecialAction": {
                                 "Dialogue": {
-                                  "Text": "{{i18n:Response.GivenWrongAnswer}}"
+                                  "Text": [ "{{i18n:Quiz.Response.GivenWrongAnswer}}" ]
                                 },
                                 "ModifyFlags": [
                                   {
@@ -125,7 +199,7 @@
                       }
                     },
                     {
-                      "Text": "{{i18n:Response.Deny}}"
+                      "Text": "{{i18n:General.Response.Deny}}"
                     }
                   ]
                 },
@@ -135,7 +209,7 @@
               },
               {
                 "Dialogue": {
-                  "Text": "{{i18n:Response.AlreadyTested}}"
+                  "Text": [ "{{i18n:Quiz.Response.AlreadyTested}}" ]
                 },
                 "ModDataFlags": [
                   "AttemptedTest"

@@ -82,6 +82,10 @@
   "BuildCost": 5000,
   "BuildMaterials": [
     {
+      "ItemID": 567, // Marble
+      "Amount": 1
+    },
+    {
       "ItemID": 72, // Diamond
       "Amount": 2
     },

@@ -1,4 +1,4 @@
-﻿using MysticalBuildings.Framework.Interfaces;
+﻿using SolidFoundations.Framework.Interfaces.Internal;
 using StardewModdingAPI;
 
 namespace MysticalBuildings.Framework.Managers
@@ -6,7 +6,7 @@ namespace MysticalBuildings.Framework.Managers
     internal class ApiManager
     {
         private IMonitor _monitor;
-        private ISolidFoundationsApi _solidFoundationsApi;
+        private IApi _solidFoundationsApi;
 
         public ApiManager(IMonitor monitor)
         {
@@ -15,7 +15,7 @@ namespace MysticalBuildings.Framework.Managers
 
         internal bool HookIntoSolidFoundations(IModHelper helper)
         {
-            _solidFoundationsApi = helper.ModRegistry.GetApi<ISolidFoundationsApi>("PeacefulEnd.SolidFoundations");
+            _solidFoundationsApi = helper.ModRegistry.GetApi<IApi>("PeacefulEnd.SolidFoundations");
 
             if (_solidFoundationsApi is null)
             {
@@ -27,7 +27,7 @@ namespace MysticalBuildings.Framework.Managers
             return true;
         }
 
-        public ISolidFoundationsApi GetSolidFoundationsApi()
+        public IApi GetSolidFoundationsApi()
         {
             return _solidFoundationsApi;
         }

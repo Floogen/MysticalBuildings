@@ -1,0 +1,9 @@
+﻿{
+  // Statue of Greed
+  // Dialogue
+  "Greed.Response.Hungry": "Hm, this looks delicious... and I'm SO hungry! I think I'll have a little snack, sorry friend.",
+  "Greed.Response.Reward": "It was tempting to eat, but here is your doubled {0} friend.",
+
+  // Questions
+  "Greed.Question.Confirmation": "Are you sure you would like to offer the {0} to this statue?"
+}
