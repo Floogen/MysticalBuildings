@@ -42,8 +42,17 @@ namespace MysticalBuildings
             // Hook into required events
             helper.Events.GameLoop.GameLaunched += OnGameLaunched;
             helper.Events.GameLoop.SaveLoaded += OnSaveLoaded;
+            helper.Events.Player.Warped += OnWarped;
             helper.Events.Display.RenderingWorld += OnRenderingWorld;
             helper.Events.Display.RenderedHud += OnRenderedHud;
+        }
+
+        private void OnWarped(object sender, WarpedEventArgs e)
+        {
+            if (e.OldLocation is UnstableCavern unstableCavern && unstableCavern is not null)
+            {
+                Game1.locations.Remove(e.OldLocation);
+            }
         }
 
         internal static Random GenerateRandom(Farmer who = null)

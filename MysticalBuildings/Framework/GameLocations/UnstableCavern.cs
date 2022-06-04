@@ -23,6 +23,7 @@ namespace MysticalBuildings.Framework.GameLocations
         private int _shakeCooldown;
         private bool _hasBeenWarned;
         private bool _isLeaving;
+        private bool _isCollapsing;
         private Point _exitTile;
         private GameLocation _exitLocation;
 
@@ -83,6 +84,13 @@ namespace MysticalBuildings.Framework.GameLocations
                     _hasBeenWarned = true;
                     Game1.addHUDMessage(new HUDMessage(MysticalBuildings.i18n.Get("Mine.Message.Warning"), null));
                 }
+                else if (_timeRemaining < 3500 && _isCollapsing is false)
+                {
+                    // Shake constantly during last 3.5 seconds
+                    MysticalBuildings.shakeTimer = 3500;
+                    this.playSound("thunder_small");
+                    _isCollapsing = true;
+                }
             }
         }
 
@@ -117,7 +125,6 @@ namespace MysticalBuildings.Framework.GameLocations
                 MysticalBuildings.shakeTimer = 0;
                 MysticalBuildings.cavernTimer = 0;
                 Game1.warpFarmer(_exitLocation.NameOrUniqueName, _exitTile.X, _exitTile.Y, 2);
-                Game1.locations.Remove(this);
             }
         }
 
@@ -208,6 +215,10 @@ namespace MysticalBuildings.Framework.GameLocations
             Vector2 endPoint = base.getRandomTile();
             for (int tries = 0; tries < 125 || mineRandom.NextDouble() < 0.85 + Game1.player.team.AverageDailyLuck(Game1.currentLocation); tries++)
             {
+                if (this.tileBeneathLadder.Equals(endPoint))
+                {
+                    continue;
+                }
                 if (this.isTileLocationTotallyClearAndPlaceable(endPoint) && this.isTileOnClearAndSolidGround(endPoint) && this.doesTileHaveProperty((int)endPoint.X, (int)endPoint.Y, "Diggable", "Back") == null)
                 {
                     StardewValley.Object ore = this.getAppropriateOre(endPoint);
