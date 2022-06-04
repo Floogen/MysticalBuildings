@@ -3,6 +3,13 @@
   "General.Response.Confirm": "Yes",
   "General.Response.Deny": "No",
 
+  // Crumbling Mine
+  // Response
+  "Mine.Response.AlreadyEntered": "The previous cavern has collapsed and is no longer reachable. Try again tomorrow.",
+
+  // Questions
+  "Mine.Question.Confirmation": "Would you like to enter the unstable mineshaft?",
+
   // Statue of Greed
   // Dialogue
   "Greed.Dialogue.Yawn": "Yawnnnn....",

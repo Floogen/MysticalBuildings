@@ -1,4 +1,12 @@
 ﻿{
+  // Crumbling Mine
+  // Messages
+  "Mine.Message.Warning": "The cavern is close to collapsing!",
+  "Mine.Message.Leaving": "You quickly escape before the cavern can collapse on you.",
+
+  // Questions
+  "Mine.Question.Leave": "Are you sure you'd like to leave? You won't be able to re-enter.",
+
   // Statue of Greed
   // Dialogue
   "Greed.Response.Hungry": "Hm, this looks delicious... and I'm SO hungry! I think I'll have a little snack, sorry friend.",

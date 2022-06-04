@@ -43,6 +43,155 @@
       "Action": "EditData",
       "Target": "Data/BuildingsData",
       "Fields": {
+        "PeacefulEnd.SolidFoundations.MysticalBuildings_CrumblingMineshaft": {
+          "ActionTiles": [
+            {
+              "Tile": {
+                "X": 2,
+                "Y": 2
+              },
+              "SpecialAction": {
+                "ConditionalActions": [
+                  {
+                    "DialogueWithChoices": {
+                      "Question": "{{i18n:Mine.Question.Confirmation}}",
+                      "Responses": [
+                        {
+                          "Text": "{{i18n:General.Response.Confirm}}",
+                          "SpecialAction": {
+                            "Broadcast": {
+                              "Message": "Poked"
+                            },
+                            "ModifyFlags": [
+                              {
+                                "Name": "HasEntered",
+                                "Type": "Temporary",
+                                "Operation": "Add"
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "Text": "{{i18n:General.Response.Deny}}"
+                        }
+                      ]
+                    },
+                    "ModDataFlags": [
+                      "!HasEntered"
+                    ]
+                  },
+                  {
+                    "Dialogue": {
+                      "Text": [ "{{i18n:Mine.Response.AlreadyEntered}}" ]
+                    },
+                    "ModDataFlags": [
+                      "HasEntered"
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "Tile": {
+                "X": 2,
+                "Y": 1
+              },
+              "SpecialAction": {
+                "ConditionalActions": [
+                  {
+                    "DialogueWithChoices": {
+                      "Question": "{{i18n:Mine.Question.Confirmation}}",
+                      "Responses": [
+                        {
+                          "Text": "{{i18n:General.Response.Confirm}}",
+                          "SpecialAction": {
+                            "Broadcast": {
+                              "Message": "Poked"
+                            },
+                            "ModifyFlags": [
+                              {
+                                "Name": "HasEntered",
+                                "Type": "Temporary",
+                                "Operation": "Add"
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "Text": "{{i18n:General.Response.Deny}}"
+                        }
+                      ]
+                    },
+                    "ModDataFlags": [
+                      "!HasEntered"
+                    ]
+                  },
+                  {
+                    "Dialogue": {
+                      "Text": [ "{{i18n:Mine.Response.AlreadyEntered}}" ]
+                    },
+                    "ModDataFlags": [
+                      "HasEntered"
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "Tile": {
+                "X": 2,
+                "Y": 0
+              },
+              "SpecialAction": {
+                "ConditionalActions": [
+                  {
+                    "DialogueWithChoices": {
+                      "Question": "{{i18n:Mine.Question.Confirmation}}",
+                      "Responses": [
+                        {
+                          "Text": "{{i18n:General.Response.Confirm}}",
+                          "SpecialAction": {
+                            "Broadcast": {
+                              "Message": "Poked"
+                            },
+                            "ModifyFlags": [
+                              {
+                                "Name": "HasEntered",
+                                "Type": "Temporary",
+                                "Operation": "Add"
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "Text": "{{i18n:General.Response.Deny}}"
+                        }
+                      ]
+                    },
+                    "ModDataFlags": [
+                      "!HasEntered"
+                    ]
+                  },
+                  {
+                    "Dialogue": {
+                      "Text": [ "{{i18n:Mine.Response.AlreadyEntered}}" ]
+                    },
+                    "ModDataFlags": [
+                      "HasEntered"
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "Update": "OnDayStart"
+    },
+    {
+      "Action": "EditData",
+      "Target": "Data/BuildingsData",
+      "Fields": {
         "PeacefulEnd.SolidFoundations.MysticalBuildings_StatueofGreed": {
           "DefaultSpecialAction": {
             "ConditionalActions": [
