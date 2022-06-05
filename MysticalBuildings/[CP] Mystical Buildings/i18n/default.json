@@ -1,4 +1,13 @@
 ﻿{
+  // Building Names / Descriptions
+  "Name.CrumblingMineshaft": "Crumbling Mineshaft",
+  "Name.ShrineOfGreed": "Shrine of Greed",
+  "Name.QuizzicalStatue": "Quizzical Statue",
+
+  "Description.CrumblingMineshaft": "A not-so-sturdy mineshaft that mysteriously leads to bountiful and unstable caverns.",
+  "Description.ShrineOfGreed": "A very hungry statue that is capable of doubling items, if it doesn't eat them.",
+  "Description.QuizzicalStatue": "An odd statue that seems fond of asking questions.",
+
   // General Responses
   "General.Response.Confirm": "Yes",
   "General.Response.Deny": "No",

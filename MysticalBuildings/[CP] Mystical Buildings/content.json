@@ -44,6 +44,8 @@
       "Target": "Data/BuildingsData",
       "Fields": {
         "PeacefulEnd.SolidFoundations.MysticalBuildings_CrumblingMineshaft": {
+          "Name": "{{i18n:Name.CrumblingMineshaft}}",
+          "Description": "{{i18n:Description.CrumblingMineshaft}}",
           "ActionTiles": [
             {
               "Tile": {
@@ -193,6 +195,8 @@
       "Target": "Data/BuildingsData",
       "Fields": {
         "PeacefulEnd.SolidFoundations.MysticalBuildings_StatueofGreed": {
+          "Name": "{{i18n:Name.StatueOfGreed}}",
+          "Description": "{{i18n:Description.StatueOfGreed}}",
           "DefaultSpecialAction": {
             "ConditionalActions": [
               {
@@ -267,6 +271,8 @@
       "Target": "Data/BuildingsData",
       "Fields": {
         "PeacefulEnd.SolidFoundations.MysticalBuildings_QuizzicalStatue": {
+          "Name": "{{i18n:Name.QuizzicalStatue}}",
+          "Description": "{{i18n:Description.QuizzicalStatue}}",
           "DefaultSpecialAction": {
             "ConditionalActions": [
               {
