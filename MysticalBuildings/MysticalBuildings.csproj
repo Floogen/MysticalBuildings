@@ -51,7 +51,7 @@
 
 			7z a -tzip "C:\Users\Floogen\Documents\GitHub Repos\MysticalBuildings\MysticalBuildings\releases\Mystical Buildings-$(Version).zip" "C:\Users\Floogen\Documents\GitHub Repos\MysticalBuildings\MysticalBuildings\releases\latest\Mystical Buildings"
 
-			powershell Remove-Item -Path '$(GameModsPath)\Mystical Buildings' -Recurse -Force
+			powershell Remove-Item -Recurse '$(GameModsPath)\Mystical Buildings\*' -Exclude config.json -Force
 
 			xcopy /s /y /i "C:\Users\Floogen\Documents\GitHub Repos\MysticalBuildings\MysticalBuildings\releases\latest\Mystical Buildings" "$(GameModsPath)\Mystical Buildings"
 		</PostBuildEvent>
