@@ -67,7 +67,7 @@
                             "ModifyFlags": [
                               {
                                 "Name": "HasEntered",
-                                "Type": "Temporary",
+                                "Type": "Permanent",
                                 "Operation": "Add"
                               }
                             ]
@@ -83,8 +83,8 @@
                     ]
                   },
                   {
-                    "Dialogue": {
-                      "Text": [ "{{i18n:Mine.Response.AlreadyEntered}}" ]
+                    "Broadcast": {
+                      "Message": "QueryCooldown"
                     },
                     "ModDataFlags": [
                       "HasEntered"
@@ -113,7 +113,7 @@
                             "ModifyFlags": [
                               {
                                 "Name": "HasEntered",
-                                "Type": "Temporary",
+                                "Type": "Permanent",
                                 "Operation": "Add"
                               }
                             ]
@@ -129,8 +129,8 @@
                     ]
                   },
                   {
-                    "Dialogue": {
-                      "Text": [ "{{i18n:Mine.Response.AlreadyEntered}}" ]
+                    "Broadcast": {
+                      "Message": "QueryCooldown"
                     },
                     "ModDataFlags": [
                       "HasEntered"
@@ -159,7 +159,7 @@
                             "ModifyFlags": [
                               {
                                 "Name": "HasEntered",
-                                "Type": "Temporary",
+                                "Type": "Permanent",
                                 "Operation": "Add"
                               }
                             ]
@@ -175,8 +175,8 @@
                     ]
                   },
                   {
-                    "Dialogue": {
-                      "Text": [ "{{i18n:Mine.Response.AlreadyEntered}}" ]
+                    "Broadcast": {
+                      "Message": "QueryCooldown"
                     },
                     "ModDataFlags": [
                       "HasEntered"
@@ -251,10 +251,8 @@
                 ]
               },
               {
-                "Dialogue": {
-                  "Text": [
-                    "{{i18n:Greed.Dialogue.Full}}"
-                  ]
+                "Broadcast": {
+                  "Message": "QueryCooldown"
                 },
                 "ModDataFlags": [
                   "IsEating"
@@ -292,7 +290,7 @@
                                 "ModifyFlags": [
                                   {
                                     "Name": "AttemptedTest",
-                                    "Type": "Temporary",
+                                    "Type": "Permanent",
                                     "Operation": "Add"
                                   },
                                   {
@@ -321,7 +319,7 @@
                                 "ModifyFlags": [
                                   {
                                     "Name": "AttemptedTest",
-                                    "Type": "Temporary",
+                                    "Type": "Permanent",
                                     "Operation": "Add"
                                   }
                                 ]
@@ -336,7 +334,7 @@
                                 "ModifyFlags": [
                                   {
                                     "Name": "AttemptedTest",
-                                    "Type": "Temporary",
+                                    "Type": "Permanent",
                                     "Operation": "Add"
                                   }
                                 ]
@@ -363,8 +361,8 @@
                 ]
               },
               {
-                "Dialogue": {
-                  "Text": [ "{{i18n:Quiz.Response.AlreadyTested}}" ]
+                "Broadcast": {
+                  "Message": "QueryCooldown"
                 },
                 "ModDataFlags": [
                   "AttemptedTest"

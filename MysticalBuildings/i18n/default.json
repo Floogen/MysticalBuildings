@@ -7,11 +7,21 @@
   // Questions
   "Mine.Question.Leave": "Are you sure you'd like to leave? You won't be able to re-enter.",
 
+  // Response
+  "Mine.Response.AlreadyEntered": "The previous cavern has collapsed and is no longer reachable. Try again tomorrow.",
+  "Mine.Response.AlreadyEntered.DaysLeft": "The previous cavern has collapsed and is no longer reachable. Try again in {0} days.",
+
   // Statue of Greed
   // Dialogue
   "Greed.Response.Hungry": "Hm, this looks delicious... and I'm SO hungry! I think I'll have a little snack, sorry friend.",
   "Greed.Response.Reward": "It was tempting to eat, but here is your doubled {0} friend.",
+  "Greed.Dialogue.Full": "The statue is loudly munching away and doesn't seem to notice you. Try again tomorrow.",
+  "Greed.Dialogue.Full.DaysLeft": "The statue is loudly munching away and doesn't seem to notice you. Try again in {0} days.",
 
   // Questions
-  "Greed.Question.Confirmation": "Are you sure you would like to offer the {0} to this statue?"
+  "Greed.Question.Confirmation": "Are you sure you would like to offer the {0} to this statue?",
+
+  // Quizzical Statue
+  "Quiz.Response.AlreadyTested": "The statue is silent. Try again tomorrow.",
+  "Quiz.Response.AlreadyTested.DaysLeft": "The statue is silent. Try again in {0} days."
 }

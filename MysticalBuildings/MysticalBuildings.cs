@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using MysticalBuildings.Framework.GameLocations;
 using MysticalBuildings.Framework.Managers;
+using MysticalBuildings.Framework.Models;
 using SolidFoundations.Framework.Interfaces.Internal;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
@@ -12,6 +13,7 @@ using StardewValley.Locations;
 using StardewValley.Menus;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace MysticalBuildings
 {
@@ -21,6 +23,7 @@ namespace MysticalBuildings
         internal static IMonitor monitor;
         internal static IModHelper modHelper;
         internal static ITranslationHelper i18n;
+        internal static ModConfig modConfig;
 
         // Managers
         internal static ApiManager apiManager;
@@ -29,12 +32,30 @@ namespace MysticalBuildings
         internal static int shakeTimer = 0;
         internal static int cavernTimer = 0;
 
+        private const string CRUMBLING_MINESHAFT_ID = "PeacefulEnd.SolidFoundations.MysticalBuildings_CrumblingMineshaft";
+        private const string STATUE_OF_GREED_ID = "PeacefulEnd.SolidFoundations.MysticalBuildings_StatueofGreed";
+        private const string QUIZZICAL_STATUE_ID = "PeacefulEnd.SolidFoundations.MysticalBuildings_QuizzicalStatue";
+        private static List<string> _targetBuildingID = new List<string>()
+        {
+            CRUMBLING_MINESHAFT_ID,
+            STATUE_OF_GREED_ID,
+            QUIZZICAL_STATUE_ID
+        };
+
+        private const string REFRESH_DAYS_REMAINING = "PeacefulEnd.MysticalBuildings.RefreshDaysRemaining";
+        private const string HAS_ENTERED_FLAG = "HasEntered";
+        private const string ATTEMPTED_TEST_FLAG = "AttemptedTest";
+        private const string IS_EATING_FLAG = "IsEating";
+        private const string QUERY_COOLDOWN_MESSAGE = "QueryCooldown";
+
+
         public override void Entry(IModHelper helper)
         {
             // Set up the monitor, helper and multiplayer
             monitor = Monitor;
             modHelper = helper;
             i18n = helper.Translation;
+            modConfig = helper.ReadConfig<ModConfig>();
 
             // Set up the managers
             apiManager = new ApiManager(monitor);
@@ -42,9 +63,65 @@ namespace MysticalBuildings
             // Hook into required events
             helper.Events.GameLoop.GameLaunched += OnGameLaunched;
             helper.Events.GameLoop.SaveLoaded += OnSaveLoaded;
+            helper.Events.GameLoop.DayStarted += OnDayStarted;
             helper.Events.Player.Warped += OnWarped;
             helper.Events.Display.RenderingWorld += OnRenderingWorld;
             helper.Events.Display.RenderedHud += OnRenderedHud;
+        }
+
+        private void OnDayStarted(object sender, DayStartedEventArgs e)
+        {
+            var solidFoundationsApi = apiManager.GetSolidFoundationsApi();
+            foreach (BuildableGameLocation buildableGameLocation in Game1.locations.Where(b => b is BuildableGameLocation))
+            {
+                foreach (var building in buildableGameLocation.buildings.Where(b => _targetBuildingID.Contains(b.buildingType.Value)))
+                {
+                    int actualDaysRemaining = 0;
+                    var rawDaysRemaining = building.modData.ContainsKey(REFRESH_DAYS_REMAINING) is true ? building.modData[REFRESH_DAYS_REMAINING] : null;
+                    if (rawDaysRemaining is not null && int.TryParse(rawDaysRemaining, out actualDaysRemaining) is false)
+                    {
+                        actualDaysRemaining = 0;
+                    }
+
+                    if (String.IsNullOrEmpty(rawDaysRemaining))
+                    {
+                        actualDaysRemaining = GetActualDaysRemaining(solidFoundationsApi, building);
+                    }
+
+                    switch (building.buildingType.Value)
+                    {
+                        case CRUMBLING_MINESHAFT_ID:
+                            if (solidFoundationsApi.DoesBuildingHaveFlag(building, HAS_ENTERED_FLAG) && actualDaysRemaining - 1 <= 0)
+                            {
+                                solidFoundationsApi.RemoveBuildingFlags(building, new List<string>() { HAS_ENTERED_FLAG });
+                                building.modData[REFRESH_DAYS_REMAINING] = null;
+                                continue;
+                            }
+                            break;
+                        case STATUE_OF_GREED_ID:
+                            if (solidFoundationsApi.DoesBuildingHaveFlag(building, IS_EATING_FLAG) && actualDaysRemaining - 1 <= 0)
+                            {
+                                solidFoundationsApi.RemoveBuildingFlags(building, new List<string>() { IS_EATING_FLAG });
+                                building.modData[REFRESH_DAYS_REMAINING] = null;
+                                continue;
+                            }
+                            break;
+                        case QUIZZICAL_STATUE_ID:
+                            if (solidFoundationsApi.DoesBuildingHaveFlag(building, ATTEMPTED_TEST_FLAG) && actualDaysRemaining - 1 <= 0)
+                            {
+                                solidFoundationsApi.RemoveBuildingFlags(building, new List<string>() { ATTEMPTED_TEST_FLAG });
+                                building.modData[REFRESH_DAYS_REMAINING] = null;
+                                continue;
+                            }
+                            break;
+                    }
+
+                    if (actualDaysRemaining - 1 >= 0)
+                    {
+                        building.modData[REFRESH_DAYS_REMAINING] = (actualDaysRemaining - 1).ToString();
+                    }
+                }
+            }
         }
 
         private void OnWarped(object sender, WarpedEventArgs e)
@@ -52,6 +129,7 @@ namespace MysticalBuildings
             if (e.OldLocation is UnstableCavern unstableCavern && unstableCavern is not null)
             {
                 Game1.locations.Remove(e.OldLocation);
+                shakeTimer = 0;
             }
         }
 
@@ -119,6 +197,14 @@ namespace MysticalBuildings
                 var solidFoundationsApi = apiManager.GetSolidFoundationsApi();
                 solidFoundationsApi.BroadcastSpecialActionTriggered += OnBroadcastSpecialActionTriggered;
             }
+            if (Helper.ModRegistry.IsLoaded("spacechase0.GenericModConfigMenu") && apiManager.HookIntoGMCM(Helper))
+            {
+                var configApi = apiManager.GetGMCMApi();
+                configApi.Register(ModManifest, () => modConfig = new ModConfig(), () => Helper.WriteConfig(modConfig));
+                configApi.AddNumberOption(this.ModManifest, () => modConfig.CrumblingMineshaftRefreshInDays, value => modConfig.CrumblingMineshaftRefreshInDays = value, () => "Crumbling Mineshaft Refresh (in days)", min: 1, max: 14, interval: 1);
+                configApi.AddNumberOption(this.ModManifest, () => modConfig.StatueOfGreedRefreshInDays, value => modConfig.StatueOfGreedRefreshInDays = value, () => "Statue of Greed Refresh (in days)", min: 1, max: 14, interval: 1);
+                configApi.AddNumberOption(this.ModManifest, () => modConfig.QuizzicalStatueRefreshInDays, value => modConfig.QuizzicalStatueRefreshInDays = value, () => "Quizzical Statue Refresh (in days)", min: 1, max: 14, interval: 1);
+            }
         }
 
         private void OnSaveLoaded(object sender, SaveLoadedEventArgs e)
@@ -129,6 +215,30 @@ namespace MysticalBuildings
 
         private void OnBroadcastSpecialActionTriggered(object sender, IApi.BroadcastEventArgs e)
         {
+            var solidFoundationsApi = apiManager.GetSolidFoundationsApi();
+            if (e.Message.Equals(QUERY_COOLDOWN_MESSAGE, StringComparison.OrdinalIgnoreCase))
+            {
+                var rawDaysRemaining = e.Building.modData.ContainsKey(REFRESH_DAYS_REMAINING) is true ? e.Building.modData[REFRESH_DAYS_REMAINING] : null;
+                if (rawDaysRemaining is null)
+                {
+                    rawDaysRemaining = GetActualDaysRemaining(solidFoundationsApi, e.Building).ToString();
+                }
+
+                switch (e.Building.buildingType.Value)
+                {
+                    case CRUMBLING_MINESHAFT_ID:
+                        Game1.activeClickableMenu = new DialogueBox(rawDaysRemaining == "1" ? i18n.Get("Mine.Response.AlreadyEntered") : String.Format(i18n.Get("Mine.Response.AlreadyEntered.DaysLeft"), rawDaysRemaining));
+                        break;
+                    case STATUE_OF_GREED_ID:
+                        Game1.activeClickableMenu = new DialogueBox(rawDaysRemaining == "1" ? i18n.Get("Greed.Dialogue.Full") : String.Format(i18n.Get("Greed.Dialogue.Full.DaysLeft"), rawDaysRemaining));
+                        break;
+                    case QUIZZICAL_STATUE_ID:
+                        Game1.activeClickableMenu = new DialogueBox(rawDaysRemaining == "1" ? i18n.Get("Quiz.Response.AlreadyTested") : String.Format(i18n.Get("Quiz.Response.AlreadyTested.DaysLeft"), rawDaysRemaining));
+                        break;
+                }
+                return;
+            }
+
             if (e.BuildingId == "PeacefulEnd.SolidFoundations.MysticalBuildings_StatueofGreed")
             {
                 if (e.Farmer.ActiveObject is null)
@@ -181,7 +291,7 @@ namespace MysticalBuildings
             }
             else
             {
-                solidFoundationsApi.AddBuildingFlags(building, new List<string>() { "IsEating" }, true);
+                solidFoundationsApi.AddBuildingFlags(building, new List<string>() { IS_EATING_FLAG }, isTemporary: false);
                 Game1.activeClickableMenu = new DialogueBox(i18n.Get("Greed.Response.Hungry"));
             }
         }
@@ -194,6 +304,33 @@ namespace MysticalBuildings
 
             var warpTile = unstableCavern.tileBeneathLadder;
             Game1.warpFarmer(unstableCavern.NameOrUniqueName, (int)warpTile.X, (int)warpTile.Y, 2);
+        }
+
+        private int GetActualDaysRemaining(IApi solidFoundationsApi, Building building)
+        {
+            switch (building.buildingType.Value)
+            {
+                case CRUMBLING_MINESHAFT_ID:
+                    if (solidFoundationsApi.DoesBuildingHaveFlag(building, HAS_ENTERED_FLAG))
+                    {
+                        return modConfig.CrumblingMineshaftRefreshInDays;
+                    }
+                    break;
+                case STATUE_OF_GREED_ID:
+                    if (solidFoundationsApi.DoesBuildingHaveFlag(building, IS_EATING_FLAG))
+                    {
+                        return modConfig.StatueOfGreedRefreshInDays;
+                    }
+                    break;
+                case QUIZZICAL_STATUE_ID:
+                    if (solidFoundationsApi.DoesBuildingHaveFlag(building, ATTEMPTED_TEST_FLAG))
+                    {
+                        return modConfig.QuizzicalStatueRefreshInDays;
+                    }
+                    break;
+            }
+
+            return 0;
         }
     }
 }

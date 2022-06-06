@@ -1,4 +1,5 @@
-﻿using SolidFoundations.Framework.Interfaces.Internal;
+﻿using MysticalBuildings.Framework.Interfaces;
+using SolidFoundations.Framework.Interfaces.Internal;
 using StardewModdingAPI;
 
 namespace MysticalBuildings.Framework.Managers
@@ -7,10 +8,30 @@ namespace MysticalBuildings.Framework.Managers
     {
         private IMonitor _monitor;
         private IApi _solidFoundationsApi;
+        private IGenericModConfigMenuApi _genericModConfigMenuApi;
 
         public ApiManager(IMonitor monitor)
         {
             _monitor = monitor;
+        }
+
+        internal bool HookIntoGMCM(IModHelper helper)
+        {
+            _genericModConfigMenuApi = helper.ModRegistry.GetApi<IGenericModConfigMenuApi>("spacechase0.GenericModConfigMenu");
+
+            if (_genericModConfigMenuApi is null)
+            {
+                _monitor.Log("Failed to hook into spacechase0.GenericModConfigMenu.", LogLevel.Error);
+                return false;
+            }
+
+            _monitor.Log("Successfully hooked into spacechase0.GenericModConfigMenu.", LogLevel.Debug);
+            return true;
+        }
+
+        public IGenericModConfigMenuApi GetGMCMApi()
+        {
+            return _genericModConfigMenuApi;
         }
 
         internal bool HookIntoSolidFoundations(IModHelper helper)
