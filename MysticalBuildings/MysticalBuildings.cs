@@ -55,7 +55,6 @@ namespace MysticalBuildings
             monitor = Monitor;
             modHelper = helper;
             i18n = helper.Translation;
-            modConfig = helper.ReadConfig<ModConfig>();
 
             // Set up the managers
             apiManager = new ApiManager(monitor);
@@ -191,6 +190,9 @@ namespace MysticalBuildings
 
         private void OnGameLaunched(object sender, GameLaunchedEventArgs e)
         {
+            // Set our default configuration file
+            modConfig = Helper.ReadConfig<ModConfig>();
+
             // Hook into the APIs we utilize
             if (Helper.ModRegistry.IsLoaded("PeacefulEnd.SolidFoundations") && apiManager.HookIntoSolidFoundations(Helper))
             {
