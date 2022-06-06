@@ -203,9 +203,9 @@ namespace MysticalBuildings
             {
                 var configApi = apiManager.GetGMCMApi();
                 configApi.Register(ModManifest, () => modConfig = new ModConfig(), () => Helper.WriteConfig(modConfig));
-                configApi.AddNumberOption(this.ModManifest, () => modConfig.CrumblingMineshaftRefreshInDays, value => modConfig.CrumblingMineshaftRefreshInDays = value, () => "Crumbling Mineshaft Refresh (in days)", min: 1, max: 14, interval: 1);
-                configApi.AddNumberOption(this.ModManifest, () => modConfig.StatueOfGreedRefreshInDays, value => modConfig.StatueOfGreedRefreshInDays = value, () => "Statue of Greed Refresh (in days)", min: 1, max: 14, interval: 1);
-                configApi.AddNumberOption(this.ModManifest, () => modConfig.QuizzicalStatueRefreshInDays, value => modConfig.QuizzicalStatueRefreshInDays = value, () => "Quizzical Statue Refresh (in days)", min: 1, max: 14, interval: 1);
+                configApi.AddNumberOption(this.ModManifest, () => modConfig.CrumblingMineshaftRefreshInDays, value => modConfig.CrumblingMineshaftRefreshInDays = value, () => "Crumbling Mineshaft Refresh (in days)", min: 1, max: 28, interval: 1);
+                configApi.AddNumberOption(this.ModManifest, () => modConfig.StatueOfGreedRefreshInDays, value => modConfig.StatueOfGreedRefreshInDays = value, () => "Statue of Greed Refresh (in days)", min: 1, max: 28, interval: 1);
+                configApi.AddNumberOption(this.ModManifest, () => modConfig.QuizzicalStatueRefreshInDays, value => modConfig.QuizzicalStatueRefreshInDays = value, () => "Quizzical Statue Refresh (in days)", min: 1, max: 28, interval: 1);
             }
         }
 
