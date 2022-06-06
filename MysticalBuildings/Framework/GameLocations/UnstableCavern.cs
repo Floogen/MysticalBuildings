@@ -45,6 +45,12 @@ namespace MysticalBuildings.Framework.GameLocations
             return "Maps\\" + $"unstable_mine_{index}";
         }
 
+        public override bool isTileOccupiedForPlacement(Vector2 tileLocation, StardewValley.Object toPlace = null)
+        {
+            // Preventing player from placing items here
+            return true;
+        }
+
         public override void UpdateWhenCurrentLocation(GameTime time)
         {
             base.UpdateWhenCurrentLocation(time);
@@ -207,6 +213,11 @@ namespace MysticalBuildings.Framework.GameLocations
             }
 
             this.tryToAddOreClumps();
+
+            if (this.getObjectAtTile((int)tileBeneathLadder.X, (int)tileBeneathLadder.Y) is not null)
+            {
+                base.removeObject(tileBeneathLadder, false);
+            }
         }
 
         private void tryToAddOreClumps()
