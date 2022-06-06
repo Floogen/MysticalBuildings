@@ -136,9 +136,9 @@ namespace MysticalBuildings
         {
             if (who is not null)
             {
-                return new Random((int)((long)Game1.uniqueIDForThisGame + who.DailyLuck + Game1.stats.DaysPlayed * 500 + Game1.ticks));
+                return new Random((int)((long)Game1.uniqueIDForThisGame + who.DailyLuck + Game1.stats.DaysPlayed * 500 + Game1.ticks + DateTime.Now.Ticks));
             }
-            return new Random((int)((long)Game1.uniqueIDForThisGame + Game1.stats.DaysPlayed * 500 + Game1.ticks));
+            return new Random((int)((long)Game1.uniqueIDForThisGame + Game1.stats.DaysPlayed * 500 + Game1.ticks + DateTime.Now.Ticks));
         }
 
         private void OnRenderedHud(object sender, RenderedHudEventArgs e)
