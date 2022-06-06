@@ -216,7 +216,7 @@ namespace MysticalBuildings.Framework.GameLocations
 
             if (this.getObjectAtTile((int)tileBeneathLadder.X, (int)tileBeneathLadder.Y) is not null)
             {
-                base.removeObject(tileBeneathLadder, false);
+                base.objects.Remove(tileBeneathLadder);
             }
         }
 
