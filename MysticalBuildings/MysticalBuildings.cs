@@ -265,11 +265,13 @@ namespace MysticalBuildings
             }
             var solidFoundationsApi = apiManager.GetSolidFoundationsApi();
 
+            double baseChance = 0.5;
             double targetChance = GenerateRandom(who).NextDouble();
             double modifier = 1.0 + who.DailyLuck * 2.0 + who.LuckLevel * 0.08;
+            Monitor.Log($"Attempting to double item via Statue of Greed: {targetChance} < {baseChance} * {modifier} ({baseChance * modifier})", LogLevel.Trace);
 
             who.removeItemFromInventory(item);
-            if (targetChance < 0.4 * modifier)
+            if (targetChance < baseChance * modifier)
             {
                 // Double the item
                 int stackSize = item.Stack * 2;
