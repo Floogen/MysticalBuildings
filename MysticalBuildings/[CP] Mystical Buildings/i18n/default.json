@@ -3,10 +3,12 @@
   "Name.CrumblingMineshaft": "Crumbling Mineshaft",
   "Name.StatueOfGreed": "Statue of Greed",
   "Name.QuizzicalStatue": "Quizzical Statue",
+  "Name.PhantomClock": "Phantom Clock",
 
   "Description.CrumblingMineshaft": "A not-so-sturdy mineshaft that mysteriously leads to bountiful and unstable caverns.",
   "Description.StatueOfGreed": "A very hungry statue that is capable of doubling items, if it doesn't eat them.",
   "Description.QuizzicalStatue": "An odd statue that seems fond of asking questions.",
+  "Description.PhantomClock": "An almost ethereal clock that is able to loop time, if it is given what it desires.",
 
   // General Responses
   "General.Response.Confirm": "Yes",
@@ -14,6 +16,14 @@
 
   // Questions
   "Mine.Question.Confirmation": "Would you like to enter the unstable mineshaft?",
+
+  // Phantom Clock
+  // Responses
+  "Clock.Response.Intro": "You can almost hear something amongst the constant ticking sounds...",
+  "Clock.Response.RequestCog": "A Rusty Cog will seize these moving gears and allow the turning back of time.",
+
+  // Questions
+  "Clock.Question.Confirmation": "Would you like to remove the Rusty Cog?",
 
   // Statue of Greed
   // Dialogue

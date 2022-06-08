@@ -43,6 +43,73 @@
       "Action": "EditData",
       "Target": "Data/BuildingsData",
       "Fields": {
+        "PeacefulEnd.SolidFoundations.MysticalBuildings_PhantomClock": {
+          "Name": "{{i18n:Name.PhantomClock}}",
+          "Description": "{{i18n:Description.PhantomClock}}",
+          "DefaultSpecialAction": {
+            "ConditionalActions": [
+              {
+                "Dialogue": {
+                  "Text": [
+                    "{{i18n:Clock.Response.Intro}}",
+                    "{{i18n:Clock.Response.RequestCog}}"
+                  ]
+                },
+                "Condition": "!IS_PLAYER_HOLDING_ITEM Current 112",
+                "ModDataFlags": [
+                  "!HasCog"
+                ]
+              },
+              {
+                "Broadcast": {
+                  "Message": "AddCog"
+                },
+                "Condition": "IS_PLAYER_HOLDING_ITEM Current 112",
+                "ModDataFlags": [
+                  "!HasCog"
+                ]
+              },
+              {
+                "DialogueWithChoices": {
+                  "Question": "{{i18n:Clock.Question.Confirmation}}",
+                  "Responses": [
+                    {
+                      "Text": "{{i18n:General.Response.Confirm}}",
+                      "SpecialAction": {
+                        "Broadcast": {
+                          "Message": "RemoveCog"
+                        },
+                        "ModifyFlags": [
+                          {
+                            "Name": "HasCog",
+                            "Operation": "Remove"
+                          },
+                          {
+                            "Name": "IsTransitioning",
+                            "Operation": "Add"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "Text": "{{i18n:General.Response.Deny}}"
+                    }
+                  ]
+                },
+                "ModDataFlags": [
+                  "HasCog"
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "Update": "OnDayStart"
+    },
+    {
+      "Action": "EditData",
+      "Target": "Data/BuildingsData",
+      "Fields": {
         "PeacefulEnd.SolidFoundations.MysticalBuildings_CrumblingMineshaft": {
           "Name": "{{i18n:Name.CrumblingMineshaft}}",
           "Description": "{{i18n:Description.CrumblingMineshaft}}",

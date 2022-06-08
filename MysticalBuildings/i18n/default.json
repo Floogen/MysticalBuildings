@@ -1,4 +1,8 @@
 ﻿{
+  // Phantom Clock
+  // Messages
+  "Clock.Message.Warning": "The Phantom Clock has rewound time.",
+
   // Crumbling Mine
   // Messages
   "Mine.Message.Warning": "The cavern is close to collapsing!",

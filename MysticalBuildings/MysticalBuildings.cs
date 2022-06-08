@@ -6,6 +6,7 @@ using MysticalBuildings.Framework.Models;
 using SolidFoundations.Framework.Interfaces.Internal;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
+using StardewModdingAPI.Utilities;
 using StardewValley;
 using StardewValley.BellsAndWhistles;
 using StardewValley.Buildings;
@@ -35,11 +36,13 @@ namespace MysticalBuildings
         private const string CRUMBLING_MINESHAFT_ID = "PeacefulEnd.SolidFoundations.MysticalBuildings_CrumblingMineshaft";
         private const string STATUE_OF_GREED_ID = "PeacefulEnd.SolidFoundations.MysticalBuildings_StatueofGreed";
         private const string QUIZZICAL_STATUE_ID = "PeacefulEnd.SolidFoundations.MysticalBuildings_QuizzicalStatue";
+        private const string PHANTOM_CLOCK_ID = "PeacefulEnd.SolidFoundations.MysticalBuildings_PhantomClock";
         private static List<string> _targetBuildingID = new List<string>()
         {
             CRUMBLING_MINESHAFT_ID,
             STATUE_OF_GREED_ID,
-            QUIZZICAL_STATUE_ID
+            QUIZZICAL_STATUE_ID,
+            PHANTOM_CLOCK_ID
         };
 
         private const string REFRESH_DAYS_REMAINING = "PeacefulEnd.MysticalBuildings.RefreshDaysRemaining";
@@ -47,6 +50,7 @@ namespace MysticalBuildings
         private const string ATTEMPTED_TEST_FLAG = "AttemptedTest";
         private const string IS_EATING_FLAG = "IsEating";
         private const string QUERY_COOLDOWN_MESSAGE = "QueryCooldown";
+        private const string HAS_COG_FLAG = "HasCog";
 
 
         public override void Entry(IModHelper helper)
@@ -110,6 +114,19 @@ namespace MysticalBuildings
                             {
                                 solidFoundationsApi.RemoveBuildingFlags(building, new List<string>() { ATTEMPTED_TEST_FLAG });
                                 building.modData[REFRESH_DAYS_REMAINING] = null;
+                                continue;
+                            }
+                            break;
+                        case PHANTOM_CLOCK_ID:
+                            if (solidFoundationsApi.DoesBuildingHaveFlag(building, HAS_COG_FLAG) && SDate.Now().DayOfWeek == DayOfWeek.Monday)
+                            {
+                                var targetDate = SDate.Now().AddDays(-7);
+                                Game1.dayOfMonth = targetDate.Day;
+                                Game1.currentSeason = targetDate.Season;
+                                Game1.setGraphicsForSeason();
+
+                                solidFoundationsApi.RemoveBuildingFlags(building, new List<string>() { HAS_COG_FLAG });
+                                Game1.addHUDMessage(new HUDMessage(i18n.Get("Clock.Message.Warning"), null));
                                 continue;
                             }
                             break;
@@ -255,6 +272,10 @@ namespace MysticalBuildings
             {
                 HandleCrumblingMineshaft(e.Building, e.Farmer);
             }
+            else if (e.BuildingId == "PeacefulEnd.SolidFoundations.MysticalBuildings_PhantomClock")
+            {
+                HandlePhantomClock(e.Building, e.Farmer, e.Message);
+            }
         }
 
         private void HandleStatueOfGreed(Building building, Farmer who, string whichAnswer, Item item)
@@ -308,6 +329,20 @@ namespace MysticalBuildings
 
             var warpTile = unstableCavern.tileBeneathLadder;
             Game1.warpFarmer(unstableCavern.NameOrUniqueName, (int)warpTile.X, (int)warpTile.Y, 2);
+        }
+
+        private void HandlePhantomClock(Building building, Farmer farmer, string message)
+        {
+            var solidFoundationsApi = apiManager.GetSolidFoundationsApi();
+            if (message.ToLower() == "addcog")
+            {
+                solidFoundationsApi.AddBuildingFlags(building, new List<string>() { HAS_COG_FLAG, "IsTransitioning" }, isTemporary: false);
+                farmer.removeItemFromInventory(farmer.ActiveObject);
+            }
+            if (message.ToLower() == "removecog")
+            {
+                farmer.addItemToInventory(new StardewValley.Object(112, 1));
+            }
         }
 
         private int GetActualDaysRemaining(IApi solidFoundationsApi, Building building)
