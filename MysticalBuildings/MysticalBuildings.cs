@@ -46,6 +46,7 @@ namespace MysticalBuildings
         };
 
         private const string REFRESH_DAYS_REMAINING = "PeacefulEnd.MysticalBuildings.RefreshDaysRemaining";
+        private const string WARN_OF_TIME_RESET_FLAG = "PeacefulEnd.MysticalBuildings.WarnOfTimeReset";
         private const string HAS_ENTERED_FLAG = "HasEntered";
         private const string ATTEMPTED_TEST_FLAG = "AttemptedTest";
         private const string IS_EATING_FLAG = "IsEating";
@@ -67,6 +68,7 @@ namespace MysticalBuildings
             helper.Events.GameLoop.GameLaunched += OnGameLaunched;
             helper.Events.GameLoop.SaveLoaded += OnSaveLoaded;
             helper.Events.GameLoop.DayStarted += OnDayStarted;
+            helper.Events.GameLoop.DayEnding += OnDayEnding;
             helper.Events.Player.Warped += OnWarped;
             helper.Events.Display.RenderingWorld += OnRenderingWorld;
             helper.Events.Display.RenderedHud += OnRenderedHud;
@@ -117,19 +119,6 @@ namespace MysticalBuildings
                                 continue;
                             }
                             break;
-                        case PHANTOM_CLOCK_ID:
-                            if (solidFoundationsApi.DoesBuildingHaveFlag(building, HAS_COG_FLAG) && SDate.Now().DayOfWeek == DayOfWeek.Monday)
-                            {
-                                var targetDate = SDate.Now().AddDays(-7);
-                                Game1.dayOfMonth = targetDate.Day;
-                                Game1.currentSeason = targetDate.Season;
-                                Game1.setGraphicsForSeason();
-
-                                solidFoundationsApi.RemoveBuildingFlags(building, new List<string>() { HAS_COG_FLAG });
-                                Game1.addHUDMessage(new HUDMessage(i18n.Get("Clock.Message.Warning"), null));
-                                continue;
-                            }
-                            break;
                     }
 
                     if (actualDaysRemaining - 1 >= 0)
@@ -138,6 +127,52 @@ namespace MysticalBuildings
                     }
                 }
             }
+
+            if (Game1.player.modData.ContainsKey(WARN_OF_TIME_RESET_FLAG))
+            {
+                Game1.addHUDMessage(new HUDMessage(i18n.Get("Clock.Message.Warning"), null));
+                Game1.player.currentLocation.playSound("crystal");
+                Game1.player.modData.Remove(WARN_OF_TIME_RESET_FLAG);
+            }
+        }
+
+        private void HandleBuildingsBeforeDayEnding()
+        {
+            var solidFoundationsApi = apiManager.GetSolidFoundationsApi();
+            foreach (BuildableGameLocation buildableGameLocation in Game1.locations.Where(b => b is BuildableGameLocation))
+            {
+                foreach (var building in buildableGameLocation.buildings.Where(b => _targetBuildingID.Contains(b.buildingType.Value)))
+                {
+                    switch (building.buildingType.Value)
+                    {
+                        case PHANTOM_CLOCK_ID:
+                            if (solidFoundationsApi.DoesBuildingHaveFlag(building, HAS_COG_FLAG) && SDate.Now().DaysSinceStart > 7)
+                            {
+                                var targetDate = SDate.Now().AddDays(-7);
+                                Game1.dayOfMonth = targetDate.Day;
+                                Game1.currentSeason = targetDate.Season;
+                                Game1.setGraphicsForSeason();
+
+                                solidFoundationsApi.RemoveBuildingFlags(building, new List<string>() { HAS_COG_FLAG });
+                                Game1.player.modData[WARN_OF_TIME_RESET_FLAG] = true.ToString();
+                                continue;
+                            }
+                            break;
+                    }
+                }
+            }
+        }
+
+        private void OnDayEnding(object sender, DayEndingEventArgs e)
+        {
+            // This line does nothing, as Solid Foundations serializes (and removes the buildings) from the game right before the day ends
+            //HandleBuildingsBeforeDayEnding();
+        }
+
+        // TODO: Delete this after SDV v1.6
+        private void OnBeforeBuildingSerialization(object sender, EventArgs e)
+        {
+            HandleBuildingsBeforeDayEnding();
         }
 
         private void OnWarped(object sender, WarpedEventArgs e)
@@ -215,6 +250,7 @@ namespace MysticalBuildings
             {
                 var solidFoundationsApi = apiManager.GetSolidFoundationsApi();
                 solidFoundationsApi.BroadcastSpecialActionTriggered += OnBroadcastSpecialActionTriggered;
+                solidFoundationsApi.BeforeBuildingSerialization += OnBeforeBuildingSerialization;
             }
             if (Helper.ModRegistry.IsLoaded("spacechase0.GenericModConfigMenu") && apiManager.HookIntoGMCM(Helper))
             {
