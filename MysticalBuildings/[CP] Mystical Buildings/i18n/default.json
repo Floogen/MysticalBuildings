@@ -4,16 +4,23 @@
   "Name.StatueOfGreed": "Statue of Greed",
   "Name.QuizzicalStatue": "Quizzical Statue",
   "Name.PhantomClock": "Phantom Clock",
+  "Name.OrbOfReflection": "Orb of Reflection",
 
   "Description.CrumblingMineshaft": "A not-so-sturdy mineshaft that mysteriously leads to bountiful and unstable caverns.",
   "Description.StatueOfGreed": "A very hungry statue that is capable of doubling items, if it doesn't eat them.",
   "Description.QuizzicalStatue": "An odd statue that seems fond of asking questions.",
   "Description.PhantomClock": "An almost ethereal clock that is able to loop time, if it is given what it desires.",
+  "Description.OrbOfReflection": "A glowing orb which instills thoughts of the past and offers boons for the future.",
 
   // General Responses
   "General.Response.Confirm": "Yes",
   "General.Response.Deny": "No",
 
+  // Orb of Reflection
+  // Questions
+  "Orb.Question.Confirmation": "Close your eyes and touch the orb?",
+
+  // Crumbling Mines
   // Questions
   "Mine.Question.Confirmation": "Would you like to enter the unstable mineshaft?",
 

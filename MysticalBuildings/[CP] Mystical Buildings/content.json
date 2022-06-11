@@ -43,6 +43,50 @@
       "Action": "EditData",
       "Target": "Data/BuildingsData",
       "Fields": {
+        "PeacefulEnd.SolidFoundations.MysticalBuildings_OrbofReflection": {
+          "Name": "{{i18n:Name.OrbOfReflection}}",
+          "Description": "{{i18n:Description.OrbOfReflection}}",
+          "DefaultSpecialAction": {
+            "ConditionalActions": [
+              {
+                "DialogueWithChoices": {
+                  "Question": "{{i18n:Orb.Question.Confirmation}}",
+                  "Responses": [
+                    {
+                      "Text": "{{i18n:General.Response.Confirm}}",
+                      "SpecialAction": {
+                        "Broadcast": {
+                          "Message": "Poked"
+                        }
+                      }
+                    },
+                    {
+                      "Text": "{{i18n:General.Response.Deny}}"
+                    }
+                  ]
+                },
+                "ModDataFlags": [
+                  "!IsNotReady"
+                ]
+              },
+              {
+                "Broadcast": {
+                  "Message": "QueryCooldown"
+                },
+                "ModDataFlags": [
+                  "IsNotReady"
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "Update": "OnDayStart"
+    },
+    {
+      "Action": "EditData",
+      "Target": "Data/BuildingsData",
+      "Fields": {
         "PeacefulEnd.SolidFoundations.MysticalBuildings_PhantomClock": {
           "Name": "{{i18n:Name.PhantomClock}}",
           "Description": "{{i18n:Description.PhantomClock}}",

@@ -37,18 +37,21 @@ namespace MysticalBuildings
         private const string STATUE_OF_GREED_ID = "PeacefulEnd.SolidFoundations.MysticalBuildings_StatueofGreed";
         private const string QUIZZICAL_STATUE_ID = "PeacefulEnd.SolidFoundations.MysticalBuildings_QuizzicalStatue";
         private const string PHANTOM_CLOCK_ID = "PeacefulEnd.SolidFoundations.MysticalBuildings_PhantomClock";
+        private const string ORB_OF_REFLECTION_ID = "PeacefulEnd.SolidFoundations.MysticalBuildings_OrbofReflection";
         private static List<string> _targetBuildingID = new List<string>()
         {
             CRUMBLING_MINESHAFT_ID,
             STATUE_OF_GREED_ID,
             QUIZZICAL_STATUE_ID,
-            PHANTOM_CLOCK_ID
+            PHANTOM_CLOCK_ID,
+            ORB_OF_REFLECTION_ID
         };
 
         private const string REFRESH_DAYS_REMAINING = "PeacefulEnd.MysticalBuildings.RefreshDaysRemaining";
         private const string WARN_OF_TIME_RESET_FLAG = "PeacefulEnd.MysticalBuildings.WarnOfTimeReset";
         private const string HAS_ENTERED_FLAG = "HasEntered";
         private const string ATTEMPTED_TEST_FLAG = "AttemptedTest";
+        private const string IS_NOT_READY_FLAG = "IsNotReady";
         private const string IS_EATING_FLAG = "IsEating";
         private const string QUERY_COOLDOWN_MESSAGE = "QueryCooldown";
         private const string HAS_COG_FLAG = "HasCog";
@@ -115,6 +118,14 @@ namespace MysticalBuildings
                             if (solidFoundationsApi.DoesBuildingHaveFlag(building, ATTEMPTED_TEST_FLAG) && actualDaysRemaining - 1 <= 0)
                             {
                                 solidFoundationsApi.RemoveBuildingFlags(building, new List<string>() { ATTEMPTED_TEST_FLAG });
+                                building.modData[REFRESH_DAYS_REMAINING] = null;
+                                continue;
+                            }
+                            break;
+                        case ORB_OF_REFLECTION_ID:
+                            if (solidFoundationsApi.DoesBuildingHaveFlag(building, IS_NOT_READY_FLAG) && actualDaysRemaining - 1 <= 0)
+                            {
+                                solidFoundationsApi.RemoveBuildingFlags(building, new List<string>() { IS_NOT_READY_FLAG });
                                 building.modData[REFRESH_DAYS_REMAINING] = null;
                                 continue;
                             }
@@ -259,6 +270,7 @@ namespace MysticalBuildings
                 configApi.AddNumberOption(this.ModManifest, () => modConfig.CrumblingMineshaftRefreshInDays, value => modConfig.CrumblingMineshaftRefreshInDays = value, () => "Crumbling Mineshaft Refresh (in days)", min: 1, max: 28, interval: 1);
                 configApi.AddNumberOption(this.ModManifest, () => modConfig.StatueOfGreedRefreshInDays, value => modConfig.StatueOfGreedRefreshInDays = value, () => "Statue of Greed Refresh (in days)", min: 1, max: 28, interval: 1);
                 configApi.AddNumberOption(this.ModManifest, () => modConfig.QuizzicalStatueRefreshInDays, value => modConfig.QuizzicalStatueRefreshInDays = value, () => "Quizzical Statue Refresh (in days)", min: 1, max: 28, interval: 1);
+                configApi.AddNumberOption(this.ModManifest, () => modConfig.OrbOfReflectionRefreshInDays, value => modConfig.OrbOfReflectionRefreshInDays = value, () => "Orb of Reflection Refresh (in days)", min: 1, max: 28, interval: 1);
             }
         }
 
@@ -290,6 +302,9 @@ namespace MysticalBuildings
                     case QUIZZICAL_STATUE_ID:
                         Game1.activeClickableMenu = new DialogueBox(rawDaysRemaining == "1" ? i18n.Get("Quiz.Response.AlreadyTested") : String.Format(i18n.Get("Quiz.Response.AlreadyTested.DaysLeft"), rawDaysRemaining));
                         break;
+                    case ORB_OF_REFLECTION_ID:
+                        Game1.activeClickableMenu = new DialogueBox(rawDaysRemaining == "1" ? i18n.Get("Orb.Response.NotReady") : String.Format(i18n.Get("Orb.Response.NotReady.DaysLeft"), rawDaysRemaining));
+                        break;
                 }
                 return;
             }
@@ -311,6 +326,10 @@ namespace MysticalBuildings
             else if (e.BuildingId == "PeacefulEnd.SolidFoundations.MysticalBuildings_PhantomClock")
             {
                 HandlePhantomClock(e.Building, e.Farmer, e.Message);
+            }
+            else if (e.BuildingId == "PeacefulEnd.SolidFoundations.MysticalBuildings_OrbofReflection")
+            {
+                HandleOrbOfReflection(e.Building, e.Farmer, e.Message);
             }
         }
 
@@ -381,6 +400,76 @@ namespace MysticalBuildings
             }
         }
 
+        private void HandleOrbOfReflection(Building building, Farmer farmer, string message)
+        {
+            Game1.globalFadeToBlack(delegate { HandleReflectEvent(building); }, fadeSpeed: 0.01f);
+        }
+
+        private void HandleReflectEvent(Building building)
+        {
+            Game1.player.CanMove = false;
+            Game1.displayHUD = false;
+            Game1.viewportFreeze = true;
+            Game1.viewport.X = -500 * 64;
+            Game1.viewport.Y = -500 * 64;
+
+            // Set the initial dialogue
+            var dialogues = new List<string>()
+            {
+                i18n.Get("Orb.Dialogue.Intro"),
+                i18n.Get("Orb.Dialogue.Intro.Second")
+            };
+
+            // Determine the buff to use
+            var buffOptions = new List<string>()
+            {
+                "Farming",
+                "Mining",
+                "Fishing",
+                "Foraging",
+                "Luck",
+                "Speed"
+            };
+
+            // Add the buff dialogue
+            int index = GenerateRandom().Next(0, buffOptions.Count);
+            dialogues.Add(i18n.Get($"Orb.Dialogue.Buff.{buffOptions[index]}"));
+            dialogues.Add(i18n.Get("Orb.Dialogue.Outro"));
+
+            // Add the actual buff
+            int buffLevel = GenerateRandom().Next(1, 4);
+            switch (buffOptions[index])
+            {
+                case "Farming":
+                    Game1.player.addedFarmingLevel.Value += buffLevel;
+                    break;
+                case "Mining":
+                    Game1.player.addedMiningLevel.Value += buffLevel;
+                    break;
+                case "Fishing":
+                    Game1.player.addedFishingLevel.Value += buffLevel;
+                    break;
+                case "Foraging":
+                    Game1.player.addedForagingLevel.Value += buffLevel;
+                    break;
+                case "Luck":
+                    Game1.player.addedLuckLevel.Value += buffLevel;
+                    break;
+                case "Speed":
+                    Game1.player.addedSpeed += buffLevel;
+                    break;
+            }
+
+            // Show the dialogue
+            var dialogueBox = new DialogueBox(dialogues);
+            Game1.activeClickableMenu = new DialogueBox(dialogues);
+            Game1.afterDialogues = delegate { Game1.globalFadeToClear(delegate { Game1.viewportFreeze = false; Game1.displayHUD = true; Game1.player.CanMove = true; }); };
+
+            var solidFoundationsApi = apiManager.GetSolidFoundationsApi();
+            solidFoundationsApi.AddBuildingFlags(building, new List<string>() { IS_NOT_READY_FLAG }, isTemporary: false);
+        }
+
+
         private int GetActualDaysRemaining(IApi solidFoundationsApi, Building building)
         {
             switch (building.buildingType.Value)
@@ -401,6 +490,12 @@ namespace MysticalBuildings
                     if (solidFoundationsApi.DoesBuildingHaveFlag(building, ATTEMPTED_TEST_FLAG))
                     {
                         return modConfig.QuizzicalStatueRefreshInDays;
+                    }
+                    break;
+                case ORB_OF_REFLECTION_ID:
+                    if (solidFoundationsApi.DoesBuildingHaveFlag(building, IS_NOT_READY_FLAG))
+                    {
+                        return modConfig.OrbOfReflectionRefreshInDays;
                     }
                     break;
             }

@@ -11,5 +11,6 @@ namespace MysticalBuildings.Framework.Models
         public int StatueOfGreedRefreshInDays { get; set; } = 1;
         public int QuizzicalStatueRefreshInDays { get; set; } = 1;
         public int CrumblingMineshaftRefreshInDays { get; set; } = 1;
+        public int OrbOfReflectionRefreshInDays { get; set; } = 1;
     }
 }
