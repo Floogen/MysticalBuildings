@@ -167,9 +167,9 @@ namespace MysticalBuildings
                     switch (building.buildingType.Value)
                     {
                         case PHANTOM_CLOCK_ID:
-                            if (solidFoundationsApi.DoesBuildingHaveFlag(building, HAS_COG_FLAG) && SDate.Now().DaysSinceStart > 7)
+                            if (solidFoundationsApi.DoesBuildingHaveFlag(building, HAS_COG_FLAG) && SDate.Now().DaysSinceStart > modConfig.PhantomClockDaysToGoBack)
                             {
-                                var targetDate = SDate.Now().AddDays(-7);
+                                var targetDate = SDate.Now().AddDays(-modConfig.PhantomClockDaysToGoBack);
                                 Game1.dayOfMonth = targetDate.Day;
                                 Game1.currentSeason = targetDate.Season;
                                 Game1.setGraphicsForSeason();
@@ -280,6 +280,7 @@ namespace MysticalBuildings
                 configApi.AddNumberOption(this.ModManifest, () => modConfig.CrumblingMineshaftRefreshInDays, value => modConfig.CrumblingMineshaftRefreshInDays = value, () => "Crumbling Mineshaft Refresh (in days)", min: 1, max: 28, interval: 1);
                 configApi.AddNumberOption(this.ModManifest, () => modConfig.StatueOfGreedRefreshInDays, value => modConfig.StatueOfGreedRefreshInDays = value, () => "Statue of Greed Refresh (in days)", min: 1, max: 28, interval: 1);
                 configApi.AddNumberOption(this.ModManifest, () => modConfig.QuizzicalStatueRefreshInDays, value => modConfig.QuizzicalStatueRefreshInDays = value, () => "Quizzical Statue Refresh (in days)", min: 1, max: 28, interval: 1);
+                configApi.AddNumberOption(this.ModManifest, () => modConfig.PhantomClockDaysToGoBack, value => modConfig.PhantomClockDaysToGoBack = value, () => "Phantom Clock Rewind (in days)", min: 1, max: 28, interval: 1);
                 configApi.AddNumberOption(this.ModManifest, () => modConfig.OrbOfReflectionRefreshInDays, value => modConfig.OrbOfReflectionRefreshInDays = value, () => "Orb of Reflection Refresh (in days)", min: 1, max: 28, interval: 1);
                 configApi.AddNumberOption(this.ModManifest, () => modConfig.ObeliskOfWeatherRefreshInDays, value => modConfig.ObeliskOfWeatherRefreshInDays = value, () => "Obelisk of Weather Refresh (in days)", min: 1, max: 28, interval: 1);
             }
