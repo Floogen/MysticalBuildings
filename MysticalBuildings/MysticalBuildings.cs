@@ -411,7 +411,14 @@ namespace MysticalBuildings
             if (message.ToLower() == "addcog")
             {
                 solidFoundationsApi.AddBuildingFlags(building, new List<string>() { HAS_COG_FLAG, "IsTransitioning" }, isTemporary: false);
-                farmer.removeItemFromInventory(farmer.ActiveObject);
+                if (farmer.ActiveObject.Stack == 1)
+                {
+                    farmer.removeItemFromInventory(farmer.ActiveObject);
+                }
+                else
+                {
+                    farmer.ActiveObject.Stack -= 1;
+                }
             }
             if (message.ToLower() == "removecog")
             {
