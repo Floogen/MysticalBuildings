@@ -43,6 +43,118 @@
       "Action": "EditData",
       "Target": "Data/BuildingsData",
       "Fields": {
+        "PeacefulEnd.SolidFoundations.MysticalBuildings_ObeliskofWeather": {
+          "Name": "{{i18n:Name.ObeliskofWeather}}",
+          "Description": "{{i18n:Description.ObeliskofWeather}}",
+          "DefaultSpecialAction": {
+            "ConditionalActions": [
+              {
+                "DialogueWithChoices": {
+                  "Question": "{{i18n:Obelisk.Question.PickWeather}}",
+                  "Responses": [
+                    {
+                      "Text": "{{i18n:Obelisk.Response.Sunny}}",
+                      "SpecialAction": {
+                        "Broadcast": {
+                          "Message": "Sunny"
+                        },
+                        "ModifyFlags": [
+                          {
+                            "Name": "IsNotReady",
+                            "Type": "Permanent",
+                            "Operation": "Add"
+                          },
+                          {
+                            "Name": "Sunny",
+                            "Operation": "Add"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "Text": "{{i18n:Obelisk.Response.Rainy}}",
+                      "SpecialAction": {
+                        "Broadcast": {
+                          "Message": "Rainy"
+                        },
+                        "ModifyFlags": [
+                          {
+                            "Name": "IsNotReady",
+                            "Type": "Permanent",
+                            "Operation": "Add"
+                          },
+                          {
+                            "Name": "Rainy",
+                            "Operation": "Add"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "Text": "{{i18n:Obelisk.Response.Stormy}}",
+                      "SpecialAction": {
+                        "Broadcast": {
+                          "Message": "Stormy"
+                        },
+                        "ModifyFlags": [
+                          {
+                            "Name": "IsNotReady",
+                            "Type": "Permanent",
+                            "Operation": "Add"
+                          },
+                          {
+                            "Name": "Stormy",
+                            "Operation": "Add"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "Text": "{{i18n:Obelisk.Response.Random}}",
+                      "SpecialAction": {
+                        "Broadcast": {
+                          "Message": "Random"
+                        },
+                        "ModifyFlags": [
+                          {
+                            "Name": "IsNotReady",
+                            "Type": "Permanent",
+                            "Operation": "Add"
+                          },
+                          {
+                            "Name": "Random",
+                            "Operation": "Add"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "Text": "{{i18n:Obelisk.Response.Later}}"
+                    }
+                  ]
+                },
+                "ModDataFlags": [
+                  "!IsNotReady"
+                ]
+              },
+              {
+                "Broadcast": {
+                  "Message": "QueryCooldown"
+                },
+                "ModDataFlags": [
+                  "IsNotReady"
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "Update": "OnDayStart"
+    },
+    {
+      "Action": "EditData",
+      "Target": "Data/BuildingsData",
+      "Fields": {
         "PeacefulEnd.SolidFoundations.MysticalBuildings_OrbofReflection": {
           "Name": "{{i18n:Name.OrbOfReflection}}",
           "Description": "{{i18n:Description.OrbOfReflection}}",

@@ -5,16 +5,29 @@
   "Name.QuizzicalStatue": "Quizzical Statue",
   "Name.PhantomClock": "Phantom Clock",
   "Name.OrbOfReflection": "Orb of Reflection",
+  "Name.ObeliskofWeather": "Obelisk of Weather",
 
   "Description.CrumblingMineshaft": "A not-so-sturdy mineshaft that mysteriously leads to bountiful and unstable caverns.",
   "Description.StatueOfGreed": "A very hungry statue that is capable of doubling items, if it doesn't eat them.",
   "Description.QuizzicalStatue": "An odd statue that seems fond of asking questions.",
   "Description.PhantomClock": "An almost ethereal clock that is able to loop time, if it is given what it desires.",
   "Description.OrbOfReflection": "A glowing orb which instills thoughts of the past and offers boons for the future.",
+  "Description.ObeliskofWeather": "An obelisk which can influence tomorrow's weather.",
 
   // General Responses
   "General.Response.Confirm": "Yes",
   "General.Response.Deny": "No",
+
+  // Obelisk of Weather
+  // Questions
+  "Obelisk.Question.PickWeather": "Instruct the obelisk to change tomorrow's weather?",
+
+  // Responses
+  "Obelisk.Response.Sunny": "Sunny",
+  "Obelisk.Response.Rainy": "Rainy",
+  "Obelisk.Response.Stormy": "Stormy",
+  "Obelisk.Response.Random": "Random",
+  "Obelisk.Response.Later": "Not now",
 
   // Orb of Reflection
   // Questions

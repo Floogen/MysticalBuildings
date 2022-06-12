@@ -38,13 +38,15 @@ namespace MysticalBuildings
         private const string QUIZZICAL_STATUE_ID = "PeacefulEnd.SolidFoundations.MysticalBuildings_QuizzicalStatue";
         private const string PHANTOM_CLOCK_ID = "PeacefulEnd.SolidFoundations.MysticalBuildings_PhantomClock";
         private const string ORB_OF_REFLECTION_ID = "PeacefulEnd.SolidFoundations.MysticalBuildings_OrbofReflection";
+        private const string OBELISK_OF_WEATHER_ID = "PeacefulEnd.SolidFoundations.MysticalBuildings_ObeliskofWeather";
         private static List<string> _targetBuildingID = new List<string>()
         {
             CRUMBLING_MINESHAFT_ID,
             STATUE_OF_GREED_ID,
             QUIZZICAL_STATUE_ID,
             PHANTOM_CLOCK_ID,
-            ORB_OF_REFLECTION_ID
+            ORB_OF_REFLECTION_ID,
+            OBELISK_OF_WEATHER_ID
         };
 
         private const string REFRESH_DAYS_REMAINING = "PeacefulEnd.MysticalBuildings.RefreshDaysRemaining";
@@ -126,6 +128,14 @@ namespace MysticalBuildings
                             if (solidFoundationsApi.DoesBuildingHaveFlag(building, IS_NOT_READY_FLAG) && actualDaysRemaining - 1 <= 0)
                             {
                                 solidFoundationsApi.RemoveBuildingFlags(building, new List<string>() { IS_NOT_READY_FLAG });
+                                building.modData[REFRESH_DAYS_REMAINING] = null;
+                                continue;
+                            }
+                            break;
+                        case OBELISK_OF_WEATHER_ID:
+                            if (solidFoundationsApi.DoesBuildingHaveFlag(building, IS_NOT_READY_FLAG) && actualDaysRemaining - 1 <= 0)
+                            {
+                                solidFoundationsApi.RemoveBuildingFlags(building, new List<string>() { IS_NOT_READY_FLAG, "Sunny", "Rainy", "Stormy", "Random", "HasSettled" });
                                 building.modData[REFRESH_DAYS_REMAINING] = null;
                                 continue;
                             }
@@ -271,6 +281,7 @@ namespace MysticalBuildings
                 configApi.AddNumberOption(this.ModManifest, () => modConfig.StatueOfGreedRefreshInDays, value => modConfig.StatueOfGreedRefreshInDays = value, () => "Statue of Greed Refresh (in days)", min: 1, max: 28, interval: 1);
                 configApi.AddNumberOption(this.ModManifest, () => modConfig.QuizzicalStatueRefreshInDays, value => modConfig.QuizzicalStatueRefreshInDays = value, () => "Quizzical Statue Refresh (in days)", min: 1, max: 28, interval: 1);
                 configApi.AddNumberOption(this.ModManifest, () => modConfig.OrbOfReflectionRefreshInDays, value => modConfig.OrbOfReflectionRefreshInDays = value, () => "Orb of Reflection Refresh (in days)", min: 1, max: 28, interval: 1);
+                configApi.AddNumberOption(this.ModManifest, () => modConfig.ObeliskOfWeatherRefreshInDays, value => modConfig.ObeliskOfWeatherRefreshInDays = value, () => "Obelisk of Weather Refresh (in days)", min: 1, max: 28, interval: 1);
             }
         }
 
@@ -305,6 +316,9 @@ namespace MysticalBuildings
                     case ORB_OF_REFLECTION_ID:
                         Game1.activeClickableMenu = new DialogueBox(rawDaysRemaining == "1" ? i18n.Get("Orb.Response.NotReady") : String.Format(i18n.Get("Orb.Response.NotReady.DaysLeft"), rawDaysRemaining));
                         break;
+                    case OBELISK_OF_WEATHER_ID:
+                        Game1.activeClickableMenu = new DialogueBox(rawDaysRemaining == "1" ? i18n.Get("Obelisk.Response.NotReady") : String.Format(i18n.Get("Obelisk.Response.NotReady.DaysLeft"), rawDaysRemaining));
+                        break;
                 }
                 return;
             }
@@ -330,6 +344,10 @@ namespace MysticalBuildings
             else if (e.BuildingId == "PeacefulEnd.SolidFoundations.MysticalBuildings_OrbofReflection")
             {
                 HandleOrbOfReflection(e.Building, e.Farmer, e.Message);
+            }
+            else if (e.BuildingId == "PeacefulEnd.SolidFoundations.MysticalBuildings_ObeliskofWeather")
+            {
+                HandleObeliskOfWeather(e.Building, e.Farmer, e.Message);
             }
         }
 
@@ -469,6 +487,25 @@ namespace MysticalBuildings
             solidFoundationsApi.AddBuildingFlags(building, new List<string>() { IS_NOT_READY_FLAG }, isTemporary: false);
         }
 
+        private void HandleObeliskOfWeather(Building building, Farmer farmer, string message)
+        {
+            int randomWeatherIndex = GenerateRandom().Next(0, 3);
+            switch (message.ToLower())
+            {
+                case "sunny":
+                    Game1.weatherForTomorrow = 0;
+                    return;
+                case "rainy":
+                    Game1.weatherForTomorrow = SDate.Now().AddDays(1).SeasonIndex == 3 ? 5 : 1;
+                    return;
+                case "stormy":
+                    Game1.weatherForTomorrow = 3;
+                    return;
+                case "random":
+                    Game1.weatherForTomorrow = randomWeatherIndex == 1 && SDate.Now().AddDays(1).SeasonIndex == 3 ? 5 : randomWeatherIndex;
+                    return;
+            }
+        }
 
         private int GetActualDaysRemaining(IApi solidFoundationsApi, Building building)
         {
@@ -496,6 +533,12 @@ namespace MysticalBuildings
                     if (solidFoundationsApi.DoesBuildingHaveFlag(building, IS_NOT_READY_FLAG))
                     {
                         return modConfig.OrbOfReflectionRefreshInDays;
+                    }
+                    break;
+                case OBELISK_OF_WEATHER_ID:
+                    if (solidFoundationsApi.DoesBuildingHaveFlag(building, IS_NOT_READY_FLAG))
+                    {
+                        return modConfig.ObeliskOfWeatherRefreshInDays;
                     }
                     break;
             }

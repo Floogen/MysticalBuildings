@@ -3,6 +3,11 @@
   // Messages
   "Clock.Message.Warning": "The Phantom Clock has rewound time.",
 
+  // Obelisk of Weather
+  // Responses
+  "Obelisk.Response.NotReady": "The obelisk remains inert. Try again tomorrow.",
+  "Obelisk.Response.NotReady.DaysLeft": "The obelisk remains inert. Try again in {0} days.",
+
   // Orb of Reflection
   // Responses
   "Orb.Response.NotReady": "The orb no longer glows and remains silent. Try again tomorrow.",
