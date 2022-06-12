@@ -167,9 +167,9 @@ namespace MysticalBuildings
                     switch (building.buildingType.Value)
                     {
                         case PHANTOM_CLOCK_ID:
-                            if (solidFoundationsApi.DoesBuildingHaveFlag(building, HAS_COG_FLAG) && SDate.Now().DaysSinceStart > modConfig.PhantomClockDaysToGoBack)
+                            if (solidFoundationsApi.DoesBuildingHaveFlag(building, HAS_COG_FLAG) && SDate.Now().DaysSinceStart > modConfig.PhantomClockDaysToGoBack + 1)
                             {
-                                var targetDate = SDate.Now().AddDays(-modConfig.PhantomClockDaysToGoBack);
+                                var targetDate = SDate.Now().AddDays(-(modConfig.PhantomClockDaysToGoBack + 1));
                                 Game1.dayOfMonth = targetDate.Day;
                                 Game1.currentSeason = targetDate.Season;
                                 Game1.setGraphicsForSeason();
