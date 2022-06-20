@@ -1,7 +1,7 @@
 ﻿using StardewModdingAPI;
 using System;
 
-namespace MysticalBuildings.Framework.Interfaces
+namespace CaveOfMemories.Framework.Interfaces
 {
     public interface IGenericModConfigMenuApi
     {

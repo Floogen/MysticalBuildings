@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MysticalBuildings.Framework.Managers
+namespace CaveOfMemories.Framework.Managers
 {
     internal class AssetManager
     {

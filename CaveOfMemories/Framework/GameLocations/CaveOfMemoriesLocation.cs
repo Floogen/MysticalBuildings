@@ -1,8 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using MysticalBuildings.Framework.Models;
-using MysticalBuildings.Framework.UI;
+using CaveOfMemories.Framework.Models;
+using CaveOfMemories.Framework.UI;
 using StardewValley;
 using StardewValley.Menus;
 using StardewValley.Objects;
@@ -12,13 +12,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 
-namespace MysticalBuildings.Framework.GameLocations
+namespace CaveOfMemories.Framework.GameLocations
 {
-    internal class CaveOfMemoriesLocation : GameLocation
+    public class CaveOfMemoriesLocation : GameLocation
     {
         private Farmer _fakeFarmer;
         private List<EventFragment> _eventFragments;
+
+        // Regex patterns
+        private readonly string ID_PATTERN = @"(?<id>[^ \/]+).*";
+        private readonly string FRIENDSHIP_PATTERN = @"\/f (?<npc>[^ ]+) (?<requiredHearts>[0-9]+).*";
+        private readonly string TIMEFRAME_PATTERN = @"\/t (?<startTime>[0-9]+).*";
+        private readonly string WEATHER_PATTERN = @"\/w (?<weather>[^ \/]+).*";
+
+        // Regex group names
+        private readonly string GROUP_ID = "id";
+        private readonly string GROUP_NPC = "npc";
+        private readonly string GROUP_REQUIRED_HEARTS = "requiredHearts";
+        private readonly string GROUP_START_TIME = "startTime";
+        private readonly string GROUP_WEATHER = "weather";
 
         public CaveOfMemoriesLocation(GameLocation exitLocation, Point exitTile) : base("Maps\\" + $"cave_of_memories", "CaveOfMemories")
         {
@@ -39,6 +53,10 @@ namespace MysticalBuildings.Framework.GameLocations
         {
             _eventFragments = new List<EventFragment>();
 
+            var idRegex = new Regex(ID_PATTERN);
+            var friendshipRegex = new Regex(FRIENDSHIP_PATTERN);
+            var timeframeRegex = new Regex(TIMEFRAME_PATTERN);
+            var weatherRegex = new Regex(WEATHER_PATTERN);
             foreach (var location in Game1.locations)
             {
                 try
@@ -46,26 +64,71 @@ namespace MysticalBuildings.Framework.GameLocations
                     var events = location.GetLocationEvents();
                     foreach (var eventKey in events.Keys)
                     {
-                        foreach (string segment in eventKey.Split('/'))
-                        {
-                            if (segment.Length > 0 && segment.ToLower()[0] == 'f')
-                            {
-                                var fragments = segment.Split(' ');
-                                if (fragments.Length == 3)
-                                {
-                                    var npcName = fragments[1];
-                                    int hearts = int.Parse(fragments[2]);
-                                    var eventName = $"{hearts / 250} Heart Event";
+                        string id = null;
+                        string npcName = null;
+                        string rawRequiredHearts = null;
+                        string startTime = null;
+                        string weather = null;
 
-                                    int eventWithParts = _eventFragments.Count(e => e.AssociatedCharacter == npcName && e.Name == eventName);
-                                    if (eventWithParts > 0)
-                                    {
-                                        eventName += $" (Part {eventWithParts + 1})";
-                                    }
-                                    _eventFragments.Add(new EventFragment() { AssociatedCharacter = npcName, Id = eventKey, Name = eventName });
+                        // Get ID_PATTERN value
+                        var idMatch = idRegex.Match(eventKey);
+                        if (idMatch.Success && idMatch.Groups.Count > 0)
+                        {
+                            id = idMatch.Groups[GROUP_ID].Value;
+                        }
+
+                        // Get FRIENDSHIP_PATTERN values
+                        var friendshipMatch = friendshipRegex.Match(eventKey);
+                        if (friendshipMatch.Success && friendshipMatch.Groups.Count > 0)
+                        {
+                            npcName = friendshipMatch.Groups[GROUP_NPC].Value;
+                            rawRequiredHearts = friendshipMatch.Groups[GROUP_REQUIRED_HEARTS].Value;
+                        }
+
+                        // Get TIMEFRAME_PATTERN values
+                        var timeframeMatch = timeframeRegex.Match(eventKey);
+                        if (timeframeMatch.Success && timeframeMatch.Groups.Count > 0)
+                        {
+                            startTime = timeframeMatch.Groups[GROUP_START_TIME].Value;
+                        }
+
+                        // Get TIMEFRAME_PATTERN values
+                        var weatherMatch = weatherRegex.Match(eventKey);
+                        if (weatherMatch.Success && weatherMatch.Groups.Count > 0)
+                        {
+                            weather = weatherMatch.Groups[GROUP_WEATHER].Value;
+                        }
+
+                        if (String.IsNullOrEmpty(id) is false && String.IsNullOrEmpty(npcName) is false && String.IsNullOrEmpty(rawRequiredHearts) is false)
+                        {
+                            int hearts = int.Parse(rawRequiredHearts);
+                            var eventName = $"{hearts / 250} Heart Event";
+
+                            int eventWithParts = _eventFragments.Count(e => e.AssociatedCharacter == npcName && e.Name == eventName);
+                            if (eventWithParts > 0)
+                            {
+                                eventName += " ";
+                                for (int x = 0; x <= eventWithParts; x++)
+                                {
+                                    eventName += "I";
                                 }
-                                break;
                             }
+
+                            // Create the EventFragment
+                            var eventFragment = new EventFragment()
+                            {
+                                AssociatedCharacter = npcName,
+                                Key = eventKey,
+                                Id = id,
+                                Data = events[eventKey],
+                                Location = location.NameOrUniqueName,
+                                Name = eventName,
+                                RequiredHearts = hearts / 250,
+                                StartTime = startTime,
+                                Weather = weather
+                            };
+
+                            _eventFragments.Add(eventFragment);
                         }
                     }
                 }
@@ -88,46 +151,86 @@ namespace MysticalBuildings.Framework.GameLocations
                 RefreshEventFragments();
             }
 
-            return _eventFragments.Where(e => e.AssociatedCharacter == npc.Name).ToList();
+
+            var characterEvents = new List<EventFragment>();
+            foreach (var fragment in _eventFragments.Where(e => e.AssociatedCharacter == npc.Name))
+            {
+                if (int.TryParse(fragment.Id, out int actualId) && Game1.player.eventsSeen.Contains(actualId) is false)
+                {
+                    continue;
+                }
+
+                characterEvents.Add(fragment);
+            }
+            return characterEvents;
         }
 
         internal void StartEventRemembrance(EventFragment eventFragment)
         {
-            Dictionary<string, string> location_events = null;
-            try
-            {
-                location_events = Game1.content.Load<Dictionary<string, string>>("Data\\Events\\" + "Town");
-            }
-            catch (Exception ex)
-            {
-                return;
-            }
-            if (location_events == null)
+            if (eventFragment is null)
             {
                 return;
             }
 
-            LocationRequest locationRequest = Game1.getLocationRequest("Town");
+            LocationRequest locationRequest = Game1.getLocationRequest(eventFragment.Location);
             locationRequest.OnLoad += delegate
             {
-                var generatedEvent = new Event(location_events["4/f Abigail 1500/t 2100 2400/w sunny"], 4);
+                var generatedEvent = new LimitedEvent(eventFragment.Data);
                 generatedEvent.setExitLocation("CaveOfMemories", 6, 6);
-                var test = new DialogueBox("");
+
                 var oldTime = Game1.timeOfDay;
                 var oldOutdoorLight = Game1.outdoorLight;
-                var oldWeather = Game1.netWorldState.Value.GetWeatherForLocation(LocationContext.Default).isRaining.Value;
+                var oldWeather = Game1.netWorldState.Value.GetWeatherForLocation(LocationContext.Default);
+
+                // Preserve the friendship data
+                Dictionary<string, int> nameToFriendshipPoints = new Dictionary<string, int>();
+                foreach (var friend in Game1.player.friendshipData.Keys)
+                {
+                    nameToFriendshipPoints[friend] = Game1.player.friendshipData[friend].Points;
+                }
+
                 generatedEvent.onEventFinished += delegate
                 {
                     Game1.timeOfDay = oldTime;
-                    Game1.netWorldState.Value.GetWeatherForLocation(LocationContext.Default).isRaining.Value = oldWeather;
                     Game1.outdoorLight = oldOutdoorLight;
-                    //Game1.updateWeather(Game1.currentGameTime);
+                    foreach (var friend in Game1.player.friendshipData.Keys.Where(f => nameToFriendshipPoints.ContainsKey(f)))
+                    {
+                        Game1.player.friendshipData[friend].Points = nameToFriendshipPoints[friend];
+                    }
+
+                    var locationWeather = Game1.netWorldState.Value.GetWeatherForLocation(LocationContext.Default);
+                    locationWeather.isRaining.Value = oldWeather.isRaining.Value;
+                    locationWeather.isSnowing.Value = oldWeather.isSnowing.Value;
+                    locationWeather.isLightning.Value = oldWeather.isLightning.Value;
+                    locationWeather.isDebrisWeather.Value = oldWeather.isDebrisWeather.Value;
+                    Game1.updateWeather(Game1.currentGameTime);
                 };
 
-                Game1.timeOfDay = 2100;
-                //Game1.netWorldState.Value.GetWeatherForLocation(LocationContext.Default).isRaining.Value = true;
+                // Set the start time, if given
+                if (String.IsNullOrEmpty(eventFragment.StartTime) is false && int.TryParse(eventFragment.StartTime, out int startTime))
+                {
+                    Game1.timeOfDay = startTime;
+                }
+
+                // Set the weather, if given
+                if (String.IsNullOrEmpty(eventFragment.Weather) is false)
+                {
+                    var locationWeather = Game1.netWorldState.Value.GetWeatherForLocation(LocationContext.Default);
+                    locationWeather.isRaining.Value = false;
+                    locationWeather.isSnowing.Value = false;
+                    locationWeather.isLightning.Value = false;
+                    locationWeather.isDebrisWeather.Value = false;
+                    switch (eventFragment.Weather.ToLower())
+                    {
+                        case "rainy":
+                        case "stormy":
+                            locationWeather.isRaining.Value = true;
+                            break;
+                    }
+                }
                 Game1.currentLocation.currentEvent = generatedEvent;
             };
+
             int xTile = 0;
             int yTile = 0;
             Utility.getDefaultWarpLocation(locationRequest.Name, ref xTile, ref yTile);
@@ -161,9 +264,6 @@ namespace MysticalBuildings.Framework.GameLocations
 
         public override void UpdateWhenCurrentLocation(GameTime time)
         {
-            // Prevents any temporarySprites from playing to stop terrain dust
-            temporarySprites.Clear();
-
             if (this.farmers.Contains(Game1.player))
             {
                 if (_fakeFarmer is null || _fakeFarmer.Name != Game1.player.Name)
@@ -184,7 +284,15 @@ namespace MysticalBuildings.Framework.GameLocations
                 if (_fakeFarmer is not null)
                 {
                     var position = Game1.player.Position;
-                    position.Y -= 1 * 64;
+                    if (Game1.player.getTileY() >= 9 || Game1.player.getTileY() <= 5)
+                    {
+                        position.Y = 0;
+                    }
+                    else
+                    {
+                        //position.Y -= 1 * 64;
+                        position.Y = (704 - Game1.player.Position.Y);
+                    }
                     _fakeFarmer.Position = position;
 
                     if (Game1.player.ActiveObject is not null && Game1.player.IsCarrying())
@@ -241,10 +349,9 @@ namespace MysticalBuildings.Framework.GameLocations
         {
             if (action.Equals("mirror", System.StringComparison.OrdinalIgnoreCase))
             {
-                Game1.activeClickableMenu = new DialogueBox(new List<string>() { "You stare into the mirror, gazing back at your reflection.", "A memory of Abigail slowly fills your mind as the world fades around you..." });
+                Game1.activeClickableMenu = new DialogueBox("You stare into the mirror, gazing back at your reflection.");
                 Game1.afterDialogues = delegate
                 {
-                    //StartEventRemembrance();
                     Game1.activeClickableMenu = new CharacterSelectionMenu(who, this);
                 };
 
@@ -269,7 +376,7 @@ namespace MysticalBuildings.Framework.GameLocations
         {
             base.drawBackground(b);
 
-            var mirrorTexture = MysticalBuildings.assetManager.GetMirrorTexture();
+            var mirrorTexture = CaveOfMemories.assetManager.GetMirrorTexture();
             b.Draw(mirrorTexture, Game1.GlobalToLocal(Game1.viewport, new Vector2(320, 128)), new Rectangle(0, 0, mirrorTexture.Width, mirrorTexture.Height), Color.White, 0f, Vector2.Zero, 4f, SpriteEffects.None, 1f);
 
             if (_fakeFarmer is not null)
@@ -281,6 +388,9 @@ namespace MysticalBuildings.Framework.GameLocations
 
         public override void draw(SpriteBatch b)
         {
+            // Prevents any temporarySprites from playing to stop terrain dust
+            temporarySprites.Clear();
+
             base.draw(b);
         }
     }

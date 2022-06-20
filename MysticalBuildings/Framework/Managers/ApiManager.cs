@@ -1,8 +1,8 @@
-﻿using MysticalBuildings.Framework.Interfaces;
+﻿using CaveOfMemories.Framework.Interfaces;
 using SolidFoundations.Framework.Interfaces.Internal;
 using StardewModdingAPI;
 
-namespace MysticalBuildings.Framework.Managers
+namespace CaveOfMemories.Framework.Managers
 {
     internal class ApiManager
     {

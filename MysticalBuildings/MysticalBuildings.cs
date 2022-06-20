@@ -1,8 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MysticalBuildings.Framework.GameLocations;
-using MysticalBuildings.Framework.Managers;
-using MysticalBuildings.Framework.Models;
+using CaveOfMemories.Framework.GameLocations;
+using CaveOfMemories.Framework.Managers;
+using CaveOfMemories.Framework.Models;
 using SolidFoundations.Framework.Interfaces.Internal;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
@@ -16,7 +16,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace MysticalBuildings
+namespace CaveOfMemories
 {
     public class MysticalBuildings : Mod
     {

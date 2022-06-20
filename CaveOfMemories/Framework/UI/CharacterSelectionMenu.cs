@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using MysticalBuildings.Framework.GameLocations;
+using CaveOfMemories.Framework.GameLocations;
 using StardewValley;
 using StardewValley.BellsAndWhistles;
 using StardewValley.Menus;
@@ -9,7 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace MysticalBuildings.Framework.UI
+namespace CaveOfMemories.Framework.UI
 {
     internal class CharacterSelectionMenu : IClickableMenu
     {
@@ -18,9 +18,8 @@ namespace MysticalBuildings.Framework.UI
         public List<ClickableTextureComponent> availablePortraits = new List<ClickableTextureComponent>();
         public List<NPC> eventableCharacters = new List<NPC>();
 
-        private string _title = "Characters";
+        private string _title = "Who to Remember?";
         private string _hoverText = "";
-        private string _cachedTextBoxValue;
 
         private int _startingRow = 0;
         private int _texturesPerRow = 4;
@@ -147,10 +146,18 @@ namespace MysticalBuildings.Framework.UI
                 var textureIndex = i + _startingRow * _texturesPerRow;
                 if (textureIndex < eventableCharacters.Count && c.containsPoint(x, y))
                 {
-                    var targetNPC = eventableCharacters[textureIndex];
-                    foreach (var eventFragment in _caveOfMemories.GetEventsForNPC(targetNPC))
+                    var targetNpc = eventableCharacters[textureIndex];
+                    if (Game1.player.friendshipData.ContainsKey(targetNpc.Name) is false)
                     {
-                        MysticalBuildings.monitor.Log(eventFragment.Name, StardewModdingAPI.LogLevel.Debug);
+                        Game1.addHUDMessage(new HUDMessage("You don't know this person!", null));
+                    }
+                    else if (_caveOfMemories.GetEventsForNPC(targetNpc).Count == 0)
+                    {
+                        Game1.addHUDMessage(new HUDMessage($"There are no events to remember from {targetNpc.displayName}.", null));
+                    }
+                    else
+                    {
+                        Game1.activeClickableMenu = new EventSelectionMenu(targetNpc, _caveOfMemories.GetEventsForNPC(targetNpc), _caveOfMemories);
                     }
 
                     base.exitThisMenu();
@@ -213,6 +220,10 @@ namespace MysticalBuildings.Framework.UI
                         if (Game1.player.friendshipData.ContainsKey(targetNpc.Name) is false)
                         {
                             overlayColor = Color.Black;
+                        }
+                        else if (_caveOfMemories.GetEventsForNPC(targetNpc).Count == 0)
+                        {
+                            overlayColor = Color.Gray;
                         }
                     }
 

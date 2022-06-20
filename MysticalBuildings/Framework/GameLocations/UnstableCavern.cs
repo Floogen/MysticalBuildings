@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using xTile.Dimensions;
 using xTile.Tiles;
 
-namespace MysticalBuildings.Framework.GameLocations
+namespace CaveOfMemories.Framework.GameLocations
 {
     internal class UnstableCavern : GameLocation
     {
