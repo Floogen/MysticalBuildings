@@ -6,6 +6,10 @@
   "FadeWhenBehind": false,
 
   "SourceRect": "0 0 96 96",
+  "SeasonOffset": {
+    "X": 0,
+    "Y": 96
+  },
   "Size": {
     "X": 6,
     "Y": 3
@@ -44,7 +48,12 @@
       "Sequences": [
         {
           "Frame": 0,
-          "Duration": 2000
+          "Duration": {
+            "RandomRange": {
+              "Min": 2000,
+              "Max": 5000
+            }
+          }
         },
         {
           "Frame": 1,
@@ -60,7 +69,12 @@
         },
         {
           "Frame": 4,
-          "Duration": 5000
+          "Duration": {
+            "RandomRange": {
+              "Min": 5000,
+              "Max": 15000
+            }
+          }
         },
         {
           "Frame": 1,
@@ -75,11 +89,26 @@
           "Duration": 250
         },
         {
+          "Frame": 4,
+          "Duration": {
+            "RandomValue": {
+              "Values": [ 0, 5000, 15000 ]
+            }
+          }
+        },
+        {
           "Frame": 5,
           "Duration": 100,
           "PlaySound": {
             "Sound": "crystal",
-            "Pitch": 1000
+            "Pitch": 1000,
+            "MinPitchRandomness": -500,
+            "MaxPitchRandomness": 500,
+            "Volume": 0.8,
+            "AmbientSettings": {
+              "Source": "2, 3",
+              "MaxDistance": 1024
+            }
           }
         },
         {
