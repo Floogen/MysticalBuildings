@@ -119,7 +119,7 @@ namespace CaveOfMemories
 
         private void HandleCaveOfMemories(Building building, Farmer who)
         {
-            Game1.warpFarmer("CaveOfMemories", 6, 10, 0);
+            Game1.warpFarmer("CaveOfMemories", 6, 14, 0);
         }
     }
 }

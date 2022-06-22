@@ -21,6 +21,13 @@ namespace CaveOfMemories.Framework.GameLocations
         private Farmer _fakeFarmer;
         private List<EventFragment> _eventFragments;
 
+        // Mirror related
+        private int _mirrorAlpha = 200;
+        private bool _fadeMirror = false;
+        private double _elapsedMillisecondsTime = 0;
+        private static readonly Point _mirrorTileBase = new Point(6, 10);
+        private static readonly Vector2 _mirrorPosition = new Vector2((_mirrorTileBase.X - 1) * 64, (_mirrorTileBase.Y - 4) * 64);
+
         // Regex patterns
         private readonly string ID_PATTERN = @"(?<id>[^ \/]+).*";
         private readonly string FRIENDSHIP_PATTERN = @"\/f (?<npc>[^ ]+) (?<requiredHearts>[0-9]+).*";
@@ -151,7 +158,6 @@ namespace CaveOfMemories.Framework.GameLocations
                 RefreshEventFragments();
             }
 
-
             var characterEvents = new List<EventFragment>();
             foreach (var fragment in _eventFragments.Where(e => e.AssociatedCharacter == npc.Name))
             {
@@ -162,6 +168,7 @@ namespace CaveOfMemories.Framework.GameLocations
 
                 characterEvents.Add(fragment);
             }
+
             return characterEvents;
         }
 
@@ -176,7 +183,7 @@ namespace CaveOfMemories.Framework.GameLocations
             locationRequest.OnLoad += delegate
             {
                 var generatedEvent = new LimitedEvent(eventFragment.Data);
-                generatedEvent.setExitLocation("CaveOfMemories", 6, 6);
+                generatedEvent.setExitLocation("CaveOfMemories", _mirrorTileBase.X, _mirrorTileBase.Y);
 
                 var oldTime = Game1.timeOfDay;
                 var oldOutdoorLight = Game1.outdoorLight;
@@ -273,7 +280,7 @@ namespace CaveOfMemories.Framework.GameLocations
                     _fakeFarmer.completelyStopAnimatingOrDoingAction();
                     _fakeFarmer.hidden.Value = false;
                     _fakeFarmer.faceDirection(facingDirection);
-                    _fakeFarmer.setTileLocation(new Vector2(6, 0));
+                    _fakeFarmer.setTileLocation(new Vector2(_mirrorTileBase.X, 0));
                     _fakeFarmer.currentLocation = Game1.currentLocation;
                     foreach (var dataKey in Game1.player.modData.Keys)
                     {
@@ -284,14 +291,16 @@ namespace CaveOfMemories.Framework.GameLocations
                 if (_fakeFarmer is not null)
                 {
                     var position = Game1.player.Position;
-                    if (Game1.player.getTileY() >= 9 || Game1.player.getTileY() <= 5)
+                    if (Game1.player.getTileY() >= _mirrorTileBase.Y + 3 || Game1.player.getTileY() <= _mirrorTileBase.Y - 1)
                     {
                         position.Y = 0;
                     }
                     else
                     {
-                        //position.Y -= 1 * 64;
-                        position.Y = (704 - Game1.player.Position.Y);
+                        // Old method: position.Y -= 1 * 64;
+
+                        // Determines how close the clone gets from player's position, using 1216 as the starting point
+                        position.Y = (1216 - Game1.player.Position.Y);
                     }
                     _fakeFarmer.Position = position;
 
@@ -330,10 +339,24 @@ namespace CaveOfMemories.Framework.GameLocations
                     }
 
                     // Fashion Sense compatibility fix
+                    _fakeFarmer.FacingDirection = GetReflectedDirection(Game1.player.FacingDirection);
+                    _fakeFarmer.faceDirection(_fakeFarmer.FacingDirection);
                     _fakeFarmer.modData["FashionSense.Animation.FacingDirection"] = _fakeFarmer.FacingDirection.ToString();
 
-                    _fakeFarmer.faceDirection(GetReflectedDirection(Game1.player.FacingDirection));
                     _fakeFarmer.Update(time, this);
+                }
+            }
+
+            if (_fadeMirror && _mirrorAlpha > 100)
+            {
+                if (_elapsedMillisecondsTime > 500)
+                {
+                    _mirrorAlpha -= 5;
+                    _elapsedMillisecondsTime = 0;
+                }
+                else
+                {
+                    _elapsedMillisecondsTime += time.TotalGameTime.TotalMilliseconds;
                 }
             }
 
@@ -347,16 +370,18 @@ namespace CaveOfMemories.Framework.GameLocations
 
         public override bool performAction(string action, Farmer who, xTile.Dimensions.Location tileLocation)
         {
-            if (action.Equals("mirror", System.StringComparison.OrdinalIgnoreCase))
+            if (action.Equals("mirror", StringComparison.OrdinalIgnoreCase) && who.getTileX() == _mirrorTileBase.X && who.getTileY() == _mirrorTileBase.Y)
             {
                 Game1.activeClickableMenu = new DialogueBox("You stare into the mirror, gazing back at your reflection.");
                 Game1.afterDialogues = delegate
                 {
                     Game1.activeClickableMenu = new CharacterSelectionMenu(who, this);
                 };
+                _fadeMirror = true;
 
                 return true;
             }
+
             return base.performAction(action, who, tileLocation);
         }
 
@@ -364,7 +389,8 @@ namespace CaveOfMemories.Framework.GameLocations
         {
             var isActionable = base.isActionableTile(xTile, yTile, who);
 
-            if (Game1.mouseCursorTransparency == 0.5f && who.getTileX() == 6 && who.getTileY() == 6)
+            Game1.mouseCursorTransparency = 0.5f;
+            if (who.getTileX() == _mirrorTileBase.X && who.getTileY() == _mirrorTileBase.Y)
             {
                 Game1.mouseCursorTransparency = 1f;
             }
@@ -377,13 +403,19 @@ namespace CaveOfMemories.Framework.GameLocations
             base.drawBackground(b);
 
             var mirrorTexture = CaveOfMemories.assetManager.GetMirrorTexture();
-            b.Draw(mirrorTexture, Game1.GlobalToLocal(Game1.viewport, new Vector2(320, 128)), new Rectangle(0, 0, mirrorTexture.Width, mirrorTexture.Height), Color.White, 0f, Vector2.Zero, 4f, SpriteEffects.None, 1f);
+            b.Draw(mirrorTexture, Game1.GlobalToLocal(Game1.viewport, _mirrorPosition), new Rectangle(0, 0, mirrorTexture.Width, mirrorTexture.Height), Color.White, 0f, Vector2.Zero, 4f, SpriteEffects.None, 1f);
 
             if (_fakeFarmer is not null)
             {
+                var previousSortMode = CaveOfMemories.modHelper.Reflection.GetField<SpriteSortMode>(b, "_sortMode").GetValue();
+                b.End();
+                b.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.PointClamp);
                 _fakeFarmer.draw(b);
+                b.End();
+                b.Begin(previousSortMode, BlendState.AlphaBlend, SamplerState.PointClamp);
             }
-            b.Draw(mirrorTexture, Game1.GlobalToLocal(Game1.viewport, new Vector2(320, 128)), new Rectangle(0, 0, mirrorTexture.Width, mirrorTexture.Height), new Color(255, 255, 255, 100), 0f, Vector2.Zero, 4f, SpriteEffects.None, 1f);
+
+            b.Draw(mirrorTexture, Game1.GlobalToLocal(Game1.viewport, _mirrorPosition), new Rectangle(0, 0, mirrorTexture.Width, mirrorTexture.Height), new Color(255, 255, 255, _mirrorAlpha), 0f, Vector2.Zero, 4f, SpriteEffects.None, 1f);
         }
 
         public override void draw(SpriteBatch b)
