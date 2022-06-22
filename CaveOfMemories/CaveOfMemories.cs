@@ -45,6 +45,7 @@ namespace CaveOfMemories
             // Hook into required events
             helper.Events.GameLoop.GameLaunched += OnGameLaunched;
             helper.Events.GameLoop.DayStarted += OnDayStarted;
+            helper.Events.GameLoop.DayEnding += OnDayEnding;
             helper.Events.Player.Warped += OnWarped;
         }
 
@@ -63,6 +64,17 @@ namespace CaveOfMemories
                     }
 
                     return;
+                }
+            }
+        }
+
+        private void OnDayEnding(object sender, DayEndingEventArgs e)
+        {
+            if (Game1.locations.Any(l => l.Name == "CaveOfMemories") is false)
+            {
+                foreach (var location in Game1.locations.Where(l => l is CaveOfMemoriesLocation).ToList())
+                {
+                    Game1.locations.Remove(location);
                 }
             }
         }
