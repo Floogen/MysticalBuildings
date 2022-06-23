@@ -5,15 +5,24 @@
   "DrawShadow": false,
   "FadeWhenBehind": false,
 
-  "SourceRect": "0 0 96 96",
-  "SeasonOffset": {
-    "X": 0,
-    "Y": 96
-  },
+  "IndoorMap": "cave_of_memories",
+  "IndoorMapType": "CaveOfMemories.Framework.GameLocations.CaveOfMemoriesLocation",
+  "IndoorMapTypeAssembly": "CaveOfMemories",
+
   "Size": {
     "X": 6,
     "Y": 3
   },
+  "TunnelDoors": [
+    {
+      "X": 2,
+      "Y": 2
+    },
+    {
+      "X": 3,
+      "Y": 2
+    }
+  ],
   "AdditionalPlacementTiles": [
     {
       "Tile": {
@@ -36,6 +45,11 @@
   ],
   "CollisionMap": "XXXXXX\nXXXXXX\nXXOOXX",
 
+  "SourceRect": "0 0 96 96",
+  "SeasonOffset": {
+    "X": 0,
+    "Y": 96
+  },
   "DrawLayers": [
     {
       "Texture": "chimes",
@@ -122,32 +136,6 @@
       ]
     }
   ],
-
-  "EventTiles": [
-    {
-      "Tile": {
-        "X": 2,
-        "Y": 2
-      },
-      "SpecialAction": {
-        "Broadcast": {
-          "Message": "Poked"
-        }
-      }
-    },
-    {
-      "Tile": {
-        "X": 3,
-        "Y": 2
-      },
-      "SpecialAction": {
-        "Broadcast": {
-          "Message": "Poked"
-        }
-      }
-    }
-  ],
-
   "SortTileOffset": 1,
 
   "Builder": "Wizard",

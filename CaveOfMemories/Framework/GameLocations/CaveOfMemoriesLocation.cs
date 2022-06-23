@@ -41,17 +41,16 @@ namespace CaveOfMemories.Framework.GameLocations
         private readonly string GROUP_START_TIME = "startTime";
         private readonly string GROUP_WEATHER = "weather";
 
-        public CaveOfMemoriesLocation(GameLocation exitLocation, Point exitTile) : base("Maps\\" + $"cave_of_memories", "CaveOfMemories")
+        // Required for serialization
+        public CaveOfMemoriesLocation() : base()
+        {
+
+        }
+
+        public CaveOfMemoriesLocation(string mapPath, string name) : base(mapPath, name)
         {
             this.IsOutdoors = false;
             this.LightLevel = 0.1f;
-
-            if (this.warps.FirstOrDefault() is Warp warp && warp is not null)
-            {
-                warp.TargetName = exitLocation.NameOrUniqueName;
-                warp.TargetX = exitTile.X;
-                warp.TargetY = exitTile.Y;
-            }
 
             RefreshEventFragments();
         }
