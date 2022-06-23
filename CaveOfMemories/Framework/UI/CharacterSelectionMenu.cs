@@ -24,6 +24,7 @@ namespace CaveOfMemories.Framework.UI
         private int _startingRow = 0;
         private int _texturesPerRow = 4;
         private int _maxRows = 2;
+        private double _initialClickCooldown = 300;
 
         private Farmer _farmer;
         private CaveOfMemoriesLocation _caveOfMemories;
@@ -130,11 +131,20 @@ namespace CaveOfMemories.Framework.UI
         public override void update(GameTime time)
         {
             base.update(time);
+
+            if (_initialClickCooldown > 0)
+            {
+                _initialClickCooldown -= time.ElapsedGameTime.TotalMilliseconds;
+            }
         }
 
         public override void receiveLeftClick(int x, int y, bool playSound = false)
         {
-            base.receiveLeftClick(x, y, playSound);
+            if (_initialClickCooldown > 0)
+            {
+                return;
+            }
+
             if (Game1.activeClickableMenu == null)
             {
                 return;
@@ -177,6 +187,8 @@ namespace CaveOfMemories.Framework.UI
                 Game1.playSound("shiny4");
                 return;
             }
+
+            base.receiveLeftClick(x, y, playSound);
         }
 
         public override void receiveScrollWheelAction(int direction)
