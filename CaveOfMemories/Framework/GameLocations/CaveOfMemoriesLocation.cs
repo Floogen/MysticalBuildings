@@ -23,7 +23,6 @@ namespace CaveOfMemories.Framework.GameLocations
 
         // Mirror related
         private int _mirrorAlpha = 200;
-        private bool _fadeMirror = false;
         private double _elapsedMillisecondsTime = 0;
         private static readonly Point _mirrorTileBase = new Point(6, 10);
         private static readonly Vector2 _mirrorPosition = new Vector2((_mirrorTileBase.X - 1) * 64, (_mirrorTileBase.Y - 4) * 64);
@@ -346,16 +345,34 @@ namespace CaveOfMemories.Framework.GameLocations
                 }
             }
 
-            if (_fadeMirror && _mirrorAlpha > 100)
+            if (Game1.player.getTileX() == _mirrorTileBase.X && Game1.player.getTileY() == _mirrorTileBase.Y)
             {
-                if (_elapsedMillisecondsTime > 500)
+                if (_mirrorAlpha > 125)
                 {
-                    _mirrorAlpha -= 5;
-                    _elapsedMillisecondsTime = 0;
+                    if (_elapsedMillisecondsTime > 500)
+                    {
+                        _mirrorAlpha -= 5;
+                        _elapsedMillisecondsTime = 0;
+                    }
+                    else
+                    {
+                        _elapsedMillisecondsTime += time.TotalGameTime.TotalMilliseconds;
+                    }
                 }
-                else
+            }
+            else
+            {
+                if (_mirrorAlpha < 200)
                 {
-                    _elapsedMillisecondsTime += time.TotalGameTime.TotalMilliseconds;
+                    if (_elapsedMillisecondsTime > 500)
+                    {
+                        _mirrorAlpha += 5;
+                        _elapsedMillisecondsTime = 0;
+                    }
+                    else
+                    {
+                        _elapsedMillisecondsTime += time.TotalGameTime.TotalMilliseconds;
+                    }
                 }
             }
 
@@ -376,7 +393,6 @@ namespace CaveOfMemories.Framework.GameLocations
                 {
                     Game1.activeClickableMenu = new CharacterSelectionMenu(who, this);
                 };
-                _fadeMirror = true;
 
                 return true;
             }
@@ -388,7 +404,6 @@ namespace CaveOfMemories.Framework.GameLocations
         {
             var isActionable = base.isActionableTile(xTile, yTile, who);
 
-            Game1.mouseCursorTransparency = 0.5f;
             if (who.getTileX() == _mirrorTileBase.X && who.getTileY() == _mirrorTileBase.Y)
             {
                 Game1.mouseCursorTransparency = 1f;
