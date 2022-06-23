@@ -45,7 +45,7 @@ namespace CaveOfMemories
         {
             if (e.NewLocation is CaveOfMemoriesLocation caveOfMemories && caveOfMemories is not null && e.OldLocation is not Farm)
             {
-                e.Player.setTileLocation(new Vector2(6, 6));
+                e.Player.setTileLocation(new Vector2(CaveOfMemoriesLocation.MirrorTileBase.X, CaveOfMemoriesLocation.MirrorTileBase.Y));
                 e.Player.FacingDirection = 0;
             }
             else if (e.OldLocation is CaveOfMemoriesLocation && e.NewLocation is not CaveOfMemoriesLocation && Game1.eventUp is false)

@@ -24,8 +24,8 @@ namespace CaveOfMemories.Framework.GameLocations
         // Mirror related
         private int _mirrorAlpha = 200;
         private double _elapsedMillisecondsTime = 0;
-        private static readonly Point _mirrorTileBase = new Point(6, 10);
-        private static readonly Vector2 _mirrorPosition = new Vector2((_mirrorTileBase.X - 1) * 64, (_mirrorTileBase.Y - 4) * 64);
+        public static readonly Point MirrorTileBase = new Point(6, 10);
+        private static readonly Vector2 _mirrorPosition = new Vector2((MirrorTileBase.X - 1) * 64, (MirrorTileBase.Y - 4) * 64);
 
         // Regex patterns
         private readonly string ID_PATTERN = @"(?<id>[^ \/]+).*";
@@ -181,7 +181,7 @@ namespace CaveOfMemories.Framework.GameLocations
             locationRequest.OnLoad += delegate
             {
                 var generatedEvent = new LimitedEvent(eventFragment.Data);
-                generatedEvent.setExitLocation("CaveOfMemories", _mirrorTileBase.X, _mirrorTileBase.Y);
+                generatedEvent.setExitLocation(this.NameOrUniqueName, MirrorTileBase.X, MirrorTileBase.Y);
 
                 var oldTime = Game1.timeOfDay;
                 var oldOutdoorLight = Game1.outdoorLight;
@@ -278,7 +278,7 @@ namespace CaveOfMemories.Framework.GameLocations
                     _fakeFarmer.completelyStopAnimatingOrDoingAction();
                     _fakeFarmer.hidden.Value = false;
                     _fakeFarmer.faceDirection(facingDirection);
-                    _fakeFarmer.setTileLocation(new Vector2(_mirrorTileBase.X, 0));
+                    _fakeFarmer.setTileLocation(new Vector2(MirrorTileBase.X, 0));
                     _fakeFarmer.currentLocation = Game1.currentLocation;
                     foreach (var dataKey in Game1.player.modData.Keys)
                     {
@@ -289,7 +289,7 @@ namespace CaveOfMemories.Framework.GameLocations
                 if (_fakeFarmer is not null)
                 {
                     var position = Game1.player.Position;
-                    if (Game1.player.getTileY() >= _mirrorTileBase.Y + 3 || Game1.player.getTileY() <= _mirrorTileBase.Y - 1)
+                    if (Game1.player.getTileY() >= MirrorTileBase.Y + 3 || Game1.player.getTileY() <= MirrorTileBase.Y - 1)
                     {
                         position.Y = 0;
                     }
@@ -345,7 +345,7 @@ namespace CaveOfMemories.Framework.GameLocations
                 }
             }
 
-            if (Game1.player.getTileX() == _mirrorTileBase.X && Game1.player.getTileY() == _mirrorTileBase.Y)
+            if (Game1.player.getTileX() == MirrorTileBase.X && Game1.player.getTileY() == MirrorTileBase.Y)
             {
                 if (_mirrorAlpha > 125)
                 {
@@ -386,7 +386,7 @@ namespace CaveOfMemories.Framework.GameLocations
 
         public override bool performAction(string action, Farmer who, xTile.Dimensions.Location tileLocation)
         {
-            if (action.Equals("mirror", StringComparison.OrdinalIgnoreCase) && who.getTileX() == _mirrorTileBase.X && who.getTileY() == _mirrorTileBase.Y)
+            if (action.Equals("mirror", StringComparison.OrdinalIgnoreCase) && who.getTileX() == MirrorTileBase.X && who.getTileY() == MirrorTileBase.Y)
             {
                 Game1.activeClickableMenu = new DialogueBox("You stare into the mirror, gazing back at your reflection.");
                 Game1.afterDialogues = delegate
@@ -404,7 +404,7 @@ namespace CaveOfMemories.Framework.GameLocations
         {
             var isActionable = base.isActionableTile(xTile, yTile, who);
 
-            if (who.getTileX() == _mirrorTileBase.X && who.getTileY() == _mirrorTileBase.Y)
+            if (who.getTileX() == MirrorTileBase.X && who.getTileY() == MirrorTileBase.Y)
             {
                 Game1.mouseCursorTransparency = 1f;
             }
