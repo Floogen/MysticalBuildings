@@ -118,7 +118,7 @@
             "Pitch": 1000,
             "MinPitchRandomness": -500,
             "MaxPitchRandomness": 500,
-            "Volume": 0.8,
+            "Volume": 0.3,
             "AmbientSettings": {
               "Source": "2, 3",
               "MaxDistance": 1024
