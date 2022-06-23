@@ -1,7 +1,7 @@
 {
   "Id": "PeacefulEnd.SolidFoundations.MysticalBuildings_CaveOfMemories",
-  "Name": "Cave of Memories",
-  "Description": "...",
+  "Name": "CaveOfMemories.Name",
+  "Description": "CaveOfMemories.Description",
   "DrawShadow": false,
   "FadeWhenBehind": false,
 
@@ -24,12 +24,6 @@
     }
   ],
   "AdditionalPlacementTiles": [
-    {
-      "Tile": {
-        "X": 1,
-        "Y": 3
-      }
-    },
     {
       "Tile": {
         "X": 2,

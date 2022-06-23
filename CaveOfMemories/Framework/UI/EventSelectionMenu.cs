@@ -160,7 +160,7 @@ namespace CaveOfMemories.Framework.UI
                 // Check if the events are being clicked
                 if (eventButtons[i].containsPoint(x, y) && _pages[_currentPage][i] is not null)
                 {
-                    Game1.activeClickableMenu = new DialogueBox($"A memory of {_targetNpc.displayName} slowly fills your mind as the world fades around you...");
+                    Game1.activeClickableMenu = new DialogueBox(String.Format(CaveOfMemories.i18n.Get("Dialogue.Memory.CharacterName"), _targetNpc.displayName));
                     Game1.afterDialogues = delegate
                     {
                         _caveOfMemories.StartEventRemembrance(_pages[_currentPage][i]);
@@ -233,7 +233,7 @@ namespace CaveOfMemories.Framework.UI
 
             // General UI (title, background)
             b.Draw(Game1.fadeToBlackRect, Game1.graphics.GraphicsDevice.Viewport.Bounds, Color.Black * 0.75f);
-            SpriteText.drawStringWithScrollCenteredAt(b, "What Event to Remember?", base.xPositionOnScreen + base.width / 2, base.yPositionOnScreen - 64);
+            SpriteText.drawStringWithScrollCenteredAt(b, CaveOfMemories.i18n.Get("Menu.Event.Title"), base.xPositionOnScreen + base.width / 2, base.yPositionOnScreen - 64);
             IClickableMenu.drawTextureBox(b, Game1.mouseCursors, new Rectangle(384, 373, 18, 18), base.xPositionOnScreen, base.yPositionOnScreen, base.width, base.height, Color.White, 4f);
 
             // Draw the content pack buttons

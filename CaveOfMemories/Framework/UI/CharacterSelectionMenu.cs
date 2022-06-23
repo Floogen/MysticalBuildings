@@ -18,7 +18,6 @@ namespace CaveOfMemories.Framework.UI
         public List<ClickableTextureComponent> availablePortraits = new List<ClickableTextureComponent>();
         public List<NPC> eventableCharacters = new List<NPC>();
 
-        private string _title = "Who to Remember?";
         private string _hoverText = "";
 
         private int _startingRow = 0;
@@ -159,11 +158,11 @@ namespace CaveOfMemories.Framework.UI
                     var targetNpc = eventableCharacters[textureIndex];
                     if (Game1.player.friendshipData.ContainsKey(targetNpc.Name) is false)
                     {
-                        Game1.addHUDMessage(new HUDMessage("You don't know this person!", null));
+                        Game1.addHUDMessage(new HUDMessage(CaveOfMemories.i18n.Get("Dialogue.Memory.DontKnow"), null));
                     }
                     else if (_caveOfMemories.GetEventsForNPC(targetNpc).Count == 0)
                     {
-                        Game1.addHUDMessage(new HUDMessage($"There are no events to remember from {targetNpc.displayName}.", null));
+                        Game1.addHUDMessage(new HUDMessage(String.Format(CaveOfMemories.i18n.Get("Dialogue.Memory.NoEvents"), targetNpc.displayName), null));
                     }
                     else
                     {
@@ -211,7 +210,7 @@ namespace CaveOfMemories.Framework.UI
             if (!Game1.dialogueUp && !Game1.IsFading())
             {
                 b.Draw(Game1.fadeToBlackRect, Game1.graphics.GraphicsDevice.Viewport.Bounds, Color.Black * 0.75f);
-                SpriteText.drawStringWithScrollCenteredAt(b, _title, base.xPositionOnScreen + base.width / 4, base.yPositionOnScreen - 64);
+                SpriteText.drawStringWithScrollCenteredAt(b, CaveOfMemories.i18n.Get("Menu.Character.Title"), base.xPositionOnScreen + base.width / 4, base.yPositionOnScreen - 64);
                 IClickableMenu.drawTextureBox(b, Game1.mouseCursors, new Rectangle(384, 373, 18, 18), base.xPositionOnScreen, base.yPositionOnScreen, base.width, base.height, Color.White, 4f);
 
                 for (int i = 0; i < availablePortraits.Count; i++)

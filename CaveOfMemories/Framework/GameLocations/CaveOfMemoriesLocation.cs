@@ -107,7 +107,7 @@ namespace CaveOfMemories.Framework.GameLocations
                         if (String.IsNullOrEmpty(id) is false && String.IsNullOrEmpty(npcName) is false && String.IsNullOrEmpty(rawRequiredHearts) is false)
                         {
                             int hearts = int.Parse(rawRequiredHearts);
-                            var eventName = $"{hearts / 250} Heart Event";
+                            var eventName = String.Format(CaveOfMemories.i18n.Get("Dialogue.Event.Hearts"), (hearts / 250).ToString());
 
                             int eventWithParts = _eventFragments.Count(e => e.AssociatedCharacter == npcName && e.Name == eventName);
                             if (eventWithParts > 0)
@@ -388,7 +388,7 @@ namespace CaveOfMemories.Framework.GameLocations
         {
             if (action.Equals("mirror", StringComparison.OrdinalIgnoreCase) && who.getTileX() == MirrorTileBase.X && who.getTileY() == MirrorTileBase.Y)
             {
-                Game1.activeClickableMenu = new DialogueBox("You stare into the mirror, gazing back at your reflection.");
+                Game1.activeClickableMenu = new DialogueBox(CaveOfMemories.i18n.Get("Dialogue.Memory.Stare"));
                 Game1.afterDialogues = delegate
                 {
                     Game1.activeClickableMenu = new CharacterSelectionMenu(who, this);
