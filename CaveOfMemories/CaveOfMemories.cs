@@ -48,6 +48,11 @@ namespace CaveOfMemories
                 e.Player.setTileLocation(new Vector2(6, 6));
                 e.Player.FacingDirection = 0;
             }
+            else if (e.OldLocation is CaveOfMemoriesLocation && e.NewLocation is not CaveOfMemoriesLocation && Game1.eventUp is false)
+            {
+                // Clear the music from the cave
+                Game1.changeMusicTrack("none");
+            }
         }
 
         internal static Random GenerateRandom(Farmer who = null)
