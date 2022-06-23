@@ -134,5 +134,19 @@
 
   "Builder": "Wizard",
   "BuildCondition": "CAN_BUILD_FOR_CABINS CaveOfMemories",
-  "BuildCost": 10000
+  "BuildCost": 50000,
+  "BuildMaterials": [
+    {
+      "ItemID": 553, // Neptunite
+      "Amount": 1
+    },
+    {
+      "ItemID": 336, // Gold Bar
+      "Amount": 10
+    },
+    {
+      "ItemID": 390, // Stone
+      "Amount": 500
+    }
+  ]
 }
