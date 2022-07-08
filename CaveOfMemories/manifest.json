@@ -11,6 +11,10 @@
     {
       "UniqueID": "PeacefulEnd.SolidFoundations",
       "IsRequired": true
+    },
+    {
+      "UniqueID": "PeacefulEnd.DynamicReflections",
+      "IsRequired": true
     }
   ]
 }

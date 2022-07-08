@@ -269,82 +269,6 @@ namespace CaveOfMemories.Framework.GameLocations
 
         public override void UpdateWhenCurrentLocation(GameTime time)
         {
-            if (this.farmers.Contains(Game1.player))
-            {
-                if (_fakeFarmer is null || _fakeFarmer.Name != Game1.player.Name)
-                {
-                    int facingDirection = GetReflectedDirection(Game1.player.FacingDirection);
-                    _fakeFarmer = Game1.player.CreateFakeEventFarmer();
-                    _fakeFarmer.completelyStopAnimatingOrDoingAction();
-                    _fakeFarmer.hidden.Value = false;
-                    _fakeFarmer.faceDirection(facingDirection);
-                    _fakeFarmer.setTileLocation(new Vector2(MirrorTileBase.X, 0));
-                    _fakeFarmer.currentLocation = Game1.currentLocation;
-                    foreach (var dataKey in Game1.player.modData.Keys)
-                    {
-                        _fakeFarmer.modData[dataKey] = Game1.player.modData[dataKey];
-                    }
-                }
-
-                if (_fakeFarmer is not null)
-                {
-                    var position = Game1.player.Position;
-                    if (Game1.player.getTileY() >= MirrorTileBase.Y + 3 || Game1.player.getTileY() <= MirrorTileBase.Y - 1)
-                    {
-                        position.Y = 0;
-                    }
-                    else
-                    {
-                        // Old method: position.Y -= 1 * 64;
-
-                        // Determines how close the clone gets from player's position, using 1216 as the starting point
-                        position.Y = (1216 - Game1.player.Position.Y);
-                    }
-                    _fakeFarmer.Position = position;
-
-                    if (Game1.player.ActiveObject is not null && Game1.player.IsCarrying())
-                    {
-                        _fakeFarmer.ActiveObject = Game1.player.ActiveObject.getOne() as StardewValley.Object;
-                    }
-                    else if (_fakeFarmer.ActiveObject is not null)
-                    {
-                        _fakeFarmer.ActiveObject = null;
-                    }
-                    _fakeFarmer.running = Game1.player.running;
-                    _fakeFarmer.FarmerSprite.PauseForSingleAnimation = Game1.player.FarmerSprite.PauseForSingleAnimation;
-                    _fakeFarmer.CanMove = Game1.player.CanMove;
-
-                    _fakeFarmer.movementDirections.Clear();
-                    foreach (var direction in Game1.player.movementDirections)
-                    {
-                        if (direction == 0)
-                        {
-                            _fakeFarmer.movementDirections.Insert(0, 2);
-                        }
-                        else if (direction == 2)
-                        {
-                            _fakeFarmer.movementDirections.Insert(0, 0);
-                        }
-                        else
-                        {
-                            _fakeFarmer.movementDirections.Insert(0, direction);
-                        }
-                    }
-
-                    foreach (var dataKey in Game1.player.modData.Keys)
-                    {
-                        _fakeFarmer.modData[dataKey] = Game1.player.modData[dataKey];
-                    }
-
-                    // Fashion Sense compatibility fix
-                    _fakeFarmer.FacingDirection = GetReflectedDirection(Game1.player.FacingDirection);
-                    _fakeFarmer.faceDirection(_fakeFarmer.FacingDirection);
-                    _fakeFarmer.modData["FashionSense.Animation.FacingDirection"] = _fakeFarmer.FacingDirection.ToString();
-
-                    _fakeFarmer.Update(time, this);
-                }
-            }
-
             if (Game1.player.getTileX() == MirrorTileBase.X && Game1.player.getTileY() == MirrorTileBase.Y)
             {
                 if (_mirrorAlpha > 125)
@@ -416,8 +340,8 @@ namespace CaveOfMemories.Framework.GameLocations
         {
             base.drawBackground(b);
 
-            var mirrorTexture = CaveOfMemories.assetManager.GetMirrorTexture();
-            b.Draw(mirrorTexture, Game1.GlobalToLocal(Game1.viewport, _mirrorPosition), new Rectangle(0, 0, mirrorTexture.Width, mirrorTexture.Height), Color.White, 0f, Vector2.Zero, 4f, SpriteEffects.None, 1f);
+            //var mirrorTexture = CaveOfMemories.assetManager.GetMirrorTexture();
+            //b.Draw(mirrorTexture, Game1.GlobalToLocal(Game1.viewport, _mirrorPosition), new Rectangle(0, 0, mirrorTexture.Width, mirrorTexture.Height), Color.White, 0f, Vector2.Zero, 4f, SpriteEffects.None, 1f);
 
             if (_fakeFarmer is not null)
             {
@@ -429,14 +353,30 @@ namespace CaveOfMemories.Framework.GameLocations
                 b.Begin(previousSortMode, BlendState.AlphaBlend, SamplerState.PointClamp);
             }
 
-            b.Draw(mirrorTexture, Game1.GlobalToLocal(Game1.viewport, _mirrorPosition), new Rectangle(0, 0, mirrorTexture.Width, mirrorTexture.Height), new Color(255, 255, 255, _mirrorAlpha), 0f, Vector2.Zero, 4f, SpriteEffects.None, 1f);
+            //b.Draw(mirrorTexture, Game1.GlobalToLocal(Game1.viewport, _mirrorPosition), new Rectangle(0, 0, mirrorTexture.Width, mirrorTexture.Height), new Color(255, 255, 255, _mirrorAlpha), 0f, Vector2.Zero, 4f, SpriteEffects.None, 1f);
+        }
+
+        public override void drawFloorDecorations(SpriteBatch b)
+        {
+            base.drawFloorDecorations(b);
+
+            //var mirrorTexture = CaveOfMemories.assetManager.GetMirrorTexture();
+            //b.Draw(mirrorTexture, Game1.GlobalToLocal(Game1.viewport, _mirrorPosition), new Rectangle(0, 0, mirrorTexture.Width, mirrorTexture.Height), new Color(255, 255, 255, _mirrorAlpha), 0f, Vector2.Zero, 4f, SpriteEffects.None, 1f);
+
+        }
+
+        protected override void drawFarmers(SpriteBatch b)
+        {
+            var mirrorTexture = CaveOfMemories.assetManager.GetMirrorTexture();
+            b.Draw(mirrorTexture, Game1.GlobalToLocal(Game1.viewport, _mirrorPosition), new Rectangle(0, 0, mirrorTexture.Width, mirrorTexture.Height), new Color(255, 255, 255, _mirrorAlpha), 0f, Vector2.Zero, 4f, SpriteEffects.None, 0f);
+
+            base.drawFarmers(b);
         }
 
         public override void draw(SpriteBatch b)
         {
             // Prevents any temporarySprites from playing to stop terrain dust
-            temporarySprites.Clear();
-
+            //temporarySprites.Clear();
             base.draw(b);
         }
     }
