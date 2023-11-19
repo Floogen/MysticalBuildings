@@ -1,13 +1,13 @@
 ﻿{
   "Name": "[SF] Cave of Memories",
   "Author": "PeacefulEnd",
-  "Version": "1.1.0",
+  "Version": "1.1.1",
   "Description": "Solid Foundations for the Cave of Memories pack.",
   "UniqueID": "PeacefulEnd.SolidFoundations.CaveOfMemories",
   "UpdateKeys": [ "Nexus:???" ],
   "ContentPackFor": {
     "UniqueID": "PeacefulEnd.SolidFoundations",
-    "MinimumVersion": "1.11.0"
+    "MinimumVersion": "1.12.4"
   },
   "Dependencies": []
 }
