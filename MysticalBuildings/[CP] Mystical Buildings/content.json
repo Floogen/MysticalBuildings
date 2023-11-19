@@ -41,7 +41,7 @@
   "Changes": [
     {
       "Action": "EditData",
-      "Target": "Data/BuildingsData",
+      "Target": "Data/Buildings",
       "Fields": {
         "PeacefulEnd.SolidFoundations.MysticalBuildings_ObeliskofWeather": {
           "Name": "{{i18n:Name.ObeliskofWeather}}",
@@ -153,7 +153,7 @@
     },
     {
       "Action": "EditData",
-      "Target": "Data/BuildingsData",
+      "Target": "Data/Buildings",
       "Fields": {
         "PeacefulEnd.SolidFoundations.MysticalBuildings_OrbofReflection": {
           "Name": "{{i18n:Name.OrbOfReflection}}",
@@ -197,7 +197,7 @@
     },
     {
       "Action": "EditData",
-      "Target": "Data/BuildingsData",
+      "Target": "Data/Buildings",
       "Fields": {
         "PeacefulEnd.SolidFoundations.MysticalBuildings_PhantomClock": {
           "Name": "{{i18n:Name.PhantomClock}}",
@@ -264,7 +264,7 @@
     },
     {
       "Action": "EditData",
-      "Target": "Data/BuildingsData",
+      "Target": "Data/Buildings",
       "Fields": {
         "PeacefulEnd.SolidFoundations.MysticalBuildings_CrumblingMineshaft": {
           "Name": "{{i18n:Name.CrumblingMineshaft}}",
@@ -415,7 +415,7 @@
     },
     {
       "Action": "EditData",
-      "Target": "Data/BuildingsData",
+      "Target": "Data/Buildings",
       "Fields": {
         "PeacefulEnd.SolidFoundations.MysticalBuildings_StatueofGreed": {
           "Name": "{{i18n:Name.StatueOfGreed}}",
@@ -489,7 +489,7 @@
     },
     {
       "Action": "EditData",
-      "Target": "Data/BuildingsData",
+      "Target": "Data/Buildings",
       "Fields": {
         "PeacefulEnd.SolidFoundations.MysticalBuildings_QuizzicalStatue": {
           "Name": "{{i18n:Name.QuizzicalStatue}}",
