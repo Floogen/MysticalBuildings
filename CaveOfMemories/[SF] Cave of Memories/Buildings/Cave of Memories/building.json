@@ -133,6 +133,7 @@
   "SortTileOffset": 1,
 
   "Builder": "Wizard",
+  "MagicalConstruction": true,
   "BuildCondition": "CAN_BUILD_FOR_CABINS CaveOfMemories",
   "BuildCost": 50000,
   "BuildMaterials": [
