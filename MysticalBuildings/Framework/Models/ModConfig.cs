@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MysticalBuildings.Framework.Models
+namespace CaveOfMemories.Framework.Models
 {
     public class ModConfig
     {

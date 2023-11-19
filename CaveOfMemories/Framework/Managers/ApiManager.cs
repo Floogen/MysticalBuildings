@@ -1,5 +1,4 @@
 ﻿using CaveOfMemories.Framework.Interfaces;
-using SolidFoundations.Framework.Interfaces.Internal;
 using StardewModdingAPI;
 
 namespace CaveOfMemories.Framework.Managers
@@ -7,7 +6,6 @@ namespace CaveOfMemories.Framework.Managers
     internal class ApiManager
     {
         private IMonitor _monitor;
-        private IApi _solidFoundationsApi;
         private IGenericModConfigMenuApi _genericModConfigMenuApi;
 
         public ApiManager(IMonitor monitor)
@@ -32,25 +30,6 @@ namespace CaveOfMemories.Framework.Managers
         public IGenericModConfigMenuApi GetGMCMApi()
         {
             return _genericModConfigMenuApi;
-        }
-
-        internal bool HookIntoSolidFoundations(IModHelper helper)
-        {
-            _solidFoundationsApi = helper.ModRegistry.GetApi<IApi>("PeacefulEnd.SolidFoundations");
-
-            if (_solidFoundationsApi is null)
-            {
-                _monitor.Log("Failed to hook into PeacefulEnd.SolidFoundations.", LogLevel.Error);
-                return false;
-            }
-
-            _monitor.Log("Successfully hooked into PeacefulEnd.SolidFoundations.", LogLevel.Debug);
-            return true;
-        }
-
-        public IApi GetSolidFoundationsApi()
-        {
-            return _solidFoundationsApi;
         }
     }
 }

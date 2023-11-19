@@ -1,9 +1,9 @@
 ﻿{
-  "Name": "[SF] Mystical Buildings",
+  "Name": "[SF] Cave of Memories",
   "Author": "PeacefulEnd",
-  "Version": "1.2.1",
-  "Description": "Solid Foundations for the Mystical Buildings.",
-  "UniqueID": "PeacefulEnd.SolidFoundations.MysticalBuildings",
+  "Version": "1.1.1",
+  "Description": "Solid Foundations for the Cave of Memories pack.",
+  "UniqueID": "PeacefulEnd.SolidFoundations.CaveOfMemories",
   "UpdateKeys": [ "Nexus:???" ],
   "ContentPackFor": {
     "UniqueID": "PeacefulEnd.SolidFoundations",
