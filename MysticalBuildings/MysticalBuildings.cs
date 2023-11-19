@@ -227,11 +227,7 @@ namespace CaveOfMemories
             if (cavernTimer >= 0 && Game1.player.currentLocation is UnstableCavern)
             {
                 Color color = SpriteText.color_White;
-                if (cavernTimer >= 30)
-                {
-                    color = SpriteText.color_Purple;
-                }
-                else if (cavernTimer >= 10)
+                if (cavernTimer <= 10)
                 {
                     color = SpriteText.color_Red;
                 }
