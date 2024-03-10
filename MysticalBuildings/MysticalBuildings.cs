@@ -18,6 +18,7 @@ using System.Linq;
 using StardewValley.Extensions;
 using StardewValley.Buffs;
 using StardewValley.GameData.Objects;
+using StardewValley.GameData.Buffs;
 
 namespace CaveOfMemories
 {
@@ -458,22 +459,22 @@ namespace CaveOfMemories
             switch (buffOptions[index])
             {
                 case "Farming":
-                    Game1.player.buffs.Apply(new Buff("ReflectiveOrb", displaySource: "Orb of Reflection", effects: new BuffEffects(new ObjectBuffAttributesData() { FarmingLevel = buffLevel })));
+                    Game1.player.buffs.Apply(new Buff("ReflectiveOrb", displaySource: "Orb of Reflection", effects: new BuffEffects(new BuffAttributesData() { FarmingLevel = buffLevel })));
                     break;
                 case "Mining":
-                    Game1.player.buffs.Apply(new Buff("ReflectiveOrb", displaySource: "Orb of Reflection", effects: new BuffEffects(new ObjectBuffAttributesData() { MiningLevel = buffLevel })));
+                    Game1.player.buffs.Apply(new Buff("ReflectiveOrb", displaySource: "Orb of Reflection", effects: new BuffEffects(new BuffAttributesData() { MiningLevel = buffLevel })));
                     break;
                 case "Fishing":
-                    Game1.player.buffs.Apply(new Buff("ReflectiveOrb", displaySource: "Orb of Reflection", effects: new BuffEffects(new ObjectBuffAttributesData() { FishingLevel = buffLevel })));
+                    Game1.player.buffs.Apply(new Buff("ReflectiveOrb", displaySource: "Orb of Reflection", effects: new BuffEffects(new BuffAttributesData() { FishingLevel = buffLevel })));
                     break;
                 case "Foraging":
-                    Game1.player.buffs.Apply(new Buff("ReflectiveOrb", displaySource: "Orb of Reflection", effects: new BuffEffects(new ObjectBuffAttributesData() { ForagingLevel = buffLevel })));
+                    Game1.player.buffs.Apply(new Buff("ReflectiveOrb", displaySource: "Orb of Reflection", effects: new BuffEffects(new BuffAttributesData() { ForagingLevel = buffLevel })));
                     break;
                 case "Luck":
-                    Game1.player.buffs.Apply(new Buff("ReflectiveOrb", displaySource: "Orb of Reflection", effects: new BuffEffects(new ObjectBuffAttributesData() { LuckLevel = buffLevel })));
+                    Game1.player.buffs.Apply(new Buff("ReflectiveOrb", displaySource: "Orb of Reflection", effects: new BuffEffects(new BuffAttributesData() { LuckLevel = buffLevel })));
                     break;
                 case "Speed":
-                    Game1.player.buffs.Apply(new Buff("ReflectiveOrb", displaySource: "Orb of Reflection", effects: new BuffEffects(new ObjectBuffAttributesData() { Speed = buffLevel })));
+                    Game1.player.buffs.Apply(new Buff("ReflectiveOrb", displaySource: "Orb of Reflection", effects: new BuffEffects(new BuffAttributesData() { Speed = buffLevel })));
                     break;
             }
 
