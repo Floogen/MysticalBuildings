@@ -7,7 +7,7 @@
   "UpdateKeys": [ "Nexus:???" ],
   "ContentPackFor": {
     "UniqueID": "PeacefulEnd.SolidFoundations",
-    "MinimumVersion": "1.12.4"
+    "MinimumVersion": "2.0.0"
   },
   "Dependencies": []
 }
